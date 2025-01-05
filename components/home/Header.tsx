@@ -1,3 +1,4 @@
+import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 import { GhostIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -24,10 +25,10 @@ const NavLink = ({
 
 const Header = (props: Props) => {
   return (
-    <nav className="container flex items-center justify-between px-8 py-4 mx-auto">
+    <nav className="container flex items-center justify-between px-8 py-4 mx-auto base">
       <div className="flex lg:flex-1">
         <NavLink href="/">
-          <span className="flex items-center gap-2 shrink-0">
+          <span className="flex items-center gap-2 shrink-0 pt-1">
             <Image
               src="/LipiMitra.png"
               alt="LipiMitra Logo"
@@ -39,16 +40,24 @@ const Header = (props: Props) => {
           </span>
         </NavLink>
       </div>
-      <div className="flex lg:justify-center gap-2 lg:gap-12 lg:items-center">
+      <div className="flex lg:justify-center  gap-4 lg:gap-12 lg:items-center">
         <NavLink href="/#pricing">Pricing</NavLink>
+        <span className="border"></span>
         <NavLink href="/#posts">Your Posts</NavLink>
       </div>
       <div className="flex lg:justify-end lg:flex-1 gap-2">
-        <div className="flex gap-2 items-center">
-          <NavLink href="/dashboard">Upload a Video</NavLink>
-          {/* Profile */}
-        </div>
-        <NavLink href="/sign-in">Sign In</NavLink>
+        <SignedIn>
+          <div className="flex gap-4 items-center">
+            <NavLink href="/dashboard">Upload a Video</NavLink>
+            {/* Profile */}
+            <UserButton />
+          </div>
+        </SignedIn>
+        <SignedOut>
+          <SignInButton>
+            <NavLink href="/sign-in">Sign In</NavLink>
+          </SignInButton>
+        </SignedOut>
       </div>
     </nav>
   );
