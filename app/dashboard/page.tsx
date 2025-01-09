@@ -1,13 +1,9 @@
 import BgBlur from "@/components/common/BgBlur";
 import { Badge } from "@/components/ui/badge";
 import UpgradeYourPlan from "@/components/upload/UpgradeYourPlan";
+import UploadForm from "@/components/upload/UploadForm";
 import getDbConnection from "@/lib/db";
-import {
-  doesUserExist,
-  getPlanType,
-  hasCancelledSubscription,
-  updateUser,
-} from "@/lib/user-helpers";
+import { doesUserExist, getPlanType, updateUser } from "@/lib/user-helpers";
 import { currentUser } from "@clerk/nextjs/server";
 
 export default async function Dashboard() {
@@ -20,7 +16,7 @@ export default async function Dashboard() {
   let userId = null;
   let priceId = null;
 
-  const hasUserCancelled = await hasCancelledSubscription(sql, email);
+  // const hasUserCancelled = await hasCancelledSubscription(sql, email);
 
   // check if user exits
   const user = await doesUserExist(sql, email);
@@ -40,6 +36,12 @@ export default async function Dashboard() {
 
   const isBasicPlan = planTypeId === "basic";
   const isProPlan = planTypeName === "pro";
+
+  // check for number of posts per paln
+  // for basic plan limit only max 3 uploads
+  const posts = await sql`SELECT * FROM posts WHERE user_id = ${userId}`;
+
+  const isValidBasicPlan = isBasicPlan && posts.length < 3;
 
   return (
     <BgBlur>
@@ -71,11 +73,10 @@ export default async function Dashboard() {
             Plan.
           </p>
 
-          {/* UpgradeYourPlan */}
-          {hasUserCancelled || planTypeName === "starter" ? (
-            <UpgradeYourPlan />
+          {isValidBasicPlan || !isProPlan ? (
+            <UploadForm />
           ) : (
-            "File upload component"
+            <UpgradeYourPlan />
           )}
         </div>
       </div>
