@@ -20,7 +20,7 @@ export async function handleCheckoutSessionCompleted({
     await createOrUpdateUser(sql, customer, customerId);
 
     // Update User Subscription
-    await updateSubscription(sql, priceId, customer.email as string);
+    await updateUserSubscription(sql, priceId, customer.email as string);
 
     // Insert the payment
     await insertPayment(sql, session, priceId, customer.email as string);
@@ -59,14 +59,14 @@ async function createOrUpdateUser(
   }
 }
 
-async function updateSubscription(
+async function updateUserSubscription(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   sql: any,
   priceId: string,
   email: string
 ) {
   try {
-    await sql`UPDATE users SET price_id = ${priceId}, status = "active" where email=${email}`;
+    await sql`UPDATE users SET price_id = ${priceId}, status = 'active' where email=${email}`;
   } catch (err) {
     console.error("Error in Updating Subscription", err);
   }

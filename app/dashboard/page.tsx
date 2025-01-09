@@ -73,11 +73,7 @@ export default async function Dashboard() {
             Plan.
           </p>
 
-          {isValidBasicPlan || !isProPlan ? (
-            <UploadForm />
-          ) : (
-            <UpgradeYourPlan />
-          )}
+          {isValidBasicPlan || isProPlan ? <UploadForm /> : <UpgradeYourPlan />}
         </div>
       </div>
     </BgBlur>
