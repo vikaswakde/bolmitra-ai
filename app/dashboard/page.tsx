@@ -1,5 +1,13 @@
+import BgBlur from "@/components/common/BgBlur";
+import { Badge } from "@/components/ui/badge";
+import UpgradeYourPlan from "@/components/upload/UpgradeYourPlan";
 import getDbConnection from "@/lib/db";
-import { useUser } from "@clerk/nextjs";
+import {
+  doesUserExist,
+  getPlanType,
+  hasCancelledSubscription,
+  updateUser,
+} from "@/lib/user-helpers";
 import { currentUser } from "@clerk/nextjs/server";
 
 export default async function Dashboard() {
@@ -9,18 +17,68 @@ export default async function Dashboard() {
 
   const sql = await getDbConnection();
 
-  // Update the user Id
   let userId = null;
+  let priceId = null;
 
-  const user = await sql`SELECT * FROM users WHERE email = ${email}`;
+  const hasUserCancelled = await hasCancelledSubscription(sql, email);
 
-  if (user && user.length > 0) {
-    // Update the user_id in users table
+  // check if user exits
+  const user = await doesUserExist(sql, email);
+
+  // if user exits then update the user_id  & get plan type
+  if (user) {
+    // get user_id from clerk user d
     userId = clerkUser?.id;
-    await sql`UPDATE users SET user_id = ${userId} WHERE email = ${email}`;
+    if (userId) {
+      await updateUser(sql, userId, email);
+    }
+
+    priceId = user[0].price_id;
   }
+  const { id: planTypeId = "starter", name: planTypeName } =
+    getPlanType(priceId);
 
-  const response = await sql`SELECT version()`;
+  const isBasicPlan = planTypeId === "basic";
+  const isProPlan = planTypeName === "pro";
 
-  return <section>{response[0].version}</section>;
+  return (
+    <BgBlur>
+      <div className="mx-auto max-w-7xl px-6 py-24 sm:py-32 lg:px-8">
+        <div className="flex flex-col items-center justify-center gap-6 text-center">
+          <Badge className="px-4 py-1 text-lg capitalize font-semibold bg-gradient-to-r from-purple-700 to to-pink-800 text-white">
+            {planTypeName}
+          </Badge>
+          <h1 className="capitalize text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+            Start Creating Amazing Content
+          </h1>
+          <p className="mt-2 text-lg leading-8 text-gray-600 max-w-2xl text-center">
+            Upload your <span className="font-bold">Audio</span> or{" "}
+            <span className="font-bold">Video</span> file and let our <br />{" "}
+            <span className="underline underline-offset-4 decoration-dashed  ">
+              AI do the magic
+            </span>{" "}
+            🪄
+          </p>
+          <p>
+            You get{" "}
+            <span className="font-bold text-amber-600 bg-amber-100 px-2 py-1 rounded-md">
+              {isBasicPlan ? "3" : isProPlan ? "Unlimited" : "0"} blog Posts
+            </span>{" "}
+            as part of the {""}{" "}
+            <span className="font-bold capitalize text-amber-900">
+              {planTypeName}
+            </span>{" "}
+            Plan.
+          </p>
+
+          {/* UpgradeYourPlan */}
+          {hasUserCancelled || planTypeName === "starter" ? (
+            <UpgradeYourPlan />
+          ) : (
+            "File upload component"
+          )}
+        </div>
+      </div>
+    </BgBlur>
+  );
 }
