@@ -15,10 +15,10 @@ interface CategoryGridProps {
 }
 
 const categoryIcons = {
-  "Interview Perp": <MicIcon className="w-6 h-6" />,
+  "Interview Prep": <MicIcon className="w-6 h-6" />,
   "Public Speaking": <PresentationIcon className="w-6 h-6" />,
   "Sales Pitch": <BookOpenIcon className="w-6 h-6" />,
-  Test: <ComputerIcon className="w-6 h-6" />,
+  "test": <ComputerIcon className="w-6 h-6" />,
 };
 
 export default function CategoryGrid({
