@@ -30,7 +30,6 @@ const PracticePage = async (
     userPlan === "free" ? questions.slice(0, 3) : questions;
   return (
     <div>
-      hello world
       <PracticeSession
         questions={limitedQuestions as Question[]}
         categoryId={categoryId}

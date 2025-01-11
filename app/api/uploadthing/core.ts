@@ -5,9 +5,8 @@ import { UploadThingError } from "uploadthing/server";
 const f = createUploadthing();
 
 export const ourFileRouter = {
-  videoOrAudioUploader: f({
-    video: { maxFileSize: "32MB" },
-    audio: { maxFileSize: "32MB" },
+  audioUploader: f({
+    audio: { maxFileSize: "8MB" },
   })
     .middleware(async ({ req }) => {
       const user = await currentUser();
@@ -24,7 +23,7 @@ export const ourFileRouter = {
       console.log("file url", file);
 
       // !!! Whatever is returned here is sent to the clientside `onClientUploadComplete` callback
-      return { userId: metadata.userId, file };
+      return { userId: metadata.userId, file, url: file.url };
     }),
 } satisfies FileRouter;
 
