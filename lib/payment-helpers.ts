@@ -1,6 +1,42 @@
 import Stripe from "stripe";
 import getDbConnection from "./db";
 
+export async function getUserSubscriptionPlan(email: string | undefined) {
+  try {
+    if (!email) return "starter";
+
+    const sql = await getDbConnection();
+    const user = await sql`
+      SELECT price_id, status 
+      FROM users 
+      WHERE email = ${email}
+    `;
+
+    if (!user || user.length === 0) {
+      return "starter";
+    }
+
+    const { price_id: priceId, status } = user[0];
+
+    // If subscription is cancelled or no price ID, return starter plan
+    if (status === "cancelled" || !priceId) {
+      return "starter";
+    }
+
+    // Map price IDs to plan names
+    // You'll need to replace these with your actual price IDs from Stripe
+    const priceIdToPlan: Record<string, string> = {
+      price_basic: "basic",
+      price_pro: "pro",
+    };
+
+    return priceIdToPlan[priceId] || "starter";
+  } catch (error) {
+    console.error("Error getting user subscription plan:", error);
+    return "starter"; // Fallback to starter plan on error
+  }
+}
+
 export async function handleCheckoutSessionCompleted({
   session,
   stripe,

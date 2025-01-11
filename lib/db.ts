@@ -1,5 +1,3 @@
-// app/actions.ts
-"use server";
 import { neon } from "@neondatabase/serverless";
 
 export default async function getDbConnection() {
