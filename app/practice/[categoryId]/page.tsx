@@ -6,11 +6,17 @@ import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import React from "react";
 
-const PracticePage = async ({
-  params: { categoryId },
-}: {
-  params: { categoryId: string };
-}) => {
+const PracticePage = async (
+  props: {
+    params: Promise<{ categoryId: string }>;
+  }
+) => {
+  const params = await props.params;
+
+  const {
+    categoryId
+  } = params;
+
   const user = await currentUser();
   if (!user) redirect("/sign-in");
   console.log("this is category id", categoryId)
