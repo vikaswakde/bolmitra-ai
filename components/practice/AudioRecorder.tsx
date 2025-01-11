@@ -4,20 +4,51 @@ import Timer from "./Timer";
 import { Button } from "../ui/button";
 import { Loader2Icon, MicIcon, SquareIcon } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useUploadThing } from "@/utils/uploadthing";
 
 interface AudioRecorderProps {
-  onRecordingComplete: (blob: Blob) => void;
-  maxDuration?: number; // in seconds;
+  onRecordingComplete: (audioUrl: string) => void;
+  maxDuration?: number;
 }
 
-const AudioRecorder = ({
+export default function AudioRecorder({
   onRecordingComplete,
-  maxDuration,
-}: AudioRecorderProps) => {
+  maxDuration = 60,
+}: AudioRecorderProps) {
   const [isRecording, setIsRecording] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-  const chunksRef = useRef<Blob[]>(null);
+  const chunksRef = useRef<Blob[]>([]);
+
+  const { startUpload } = useUploadThing("audioUploader");
+
+  const handleUpload = async (audioBlob: Blob) => {
+    try {
+      setIsProcessing(true);
+      
+      // Convert blob to File object
+      const file = new File([audioBlob], "recording.webm", {
+        type: "audio/webm",
+      });
+
+      const uploadResponse = await startUpload([file]);
+      
+      if (!uploadResponse?.[0]?.url) {
+        throw new Error("Upload failed");
+      }
+
+      onRecordingComplete(uploadResponse[0].url);
+    } catch (error) {
+      console.error("Upload error:", error);
+      toast({
+        title: "Error uploading audio",
+        description: error instanceof Error ? error.message : "Unknown error occurred",
+        variant: "destructive"
+      });
+    } finally {
+      setIsProcessing(false);
+    }
+  };
 
   const { toast } = useToast();
 
@@ -28,25 +59,31 @@ const AudioRecorder = ({
       chunksRef.current = [];
 
       mediaRecorderRef.current.ondataavailable = (e) => {
-        if (e.data.size > 0 && chunksRef.current) {
+        if (e.data.size > 0) {
           chunksRef.current.push(e.data);
         }
+      };
+
+      mediaRecorderRef.current.onstop = () => {
+        const audioBlob = new Blob(chunksRef.current, { type: 'audio/webm' });
+        handleUpload(audioBlob);
+        stream.getTracks().forEach(track => track.stop());
       };
 
       mediaRecorderRef.current.start();
       setIsRecording(true);
     } catch (error) {
-      console.error("Error starting recording:", error);
+      console.error('Error accessing microphone:', error);
       toast({
         title: "Error Starting Recording",
-        variant: "destructive",
+        description: "Failed to access microphone",
+        variant: "destructive"
       });
     }
   };
 
   const stopRecording = () => {
     if (mediaRecorderRef.current && isRecording) {
-      setIsProcessing(true);
       mediaRecorderRef.current.stop();
       setIsRecording(false);
     }
@@ -60,7 +97,7 @@ const AudioRecorder = ({
     <div className="space-y-4">
       {isRecording && (
         <Timer
-          duration={maxDuration || 0}
+          duration={maxDuration}
           isRecording={isRecording}
           onTimeEnd={handleTimeEnd}
         />
@@ -71,7 +108,7 @@ const AudioRecorder = ({
           <Button
             onClick={startRecording}
             disabled={isProcessing}
-            size={"lg"}
+            size="lg"
             className="gap-2 rounded-2xl bg-purple-700/70 hover:bg-purple-600/60 shadow-lg"
           >
             {isProcessing ? (
@@ -85,7 +122,7 @@ const AudioRecorder = ({
           <Button
             onClick={stopRecording}
             variant="destructive"
-            size={"lg"}
+            size="lg"
             className="gap-2 rounded-2xl shadow-sm border border-purple-500/10"
           >
             <SquareIcon className="w-4 h-4" />
@@ -95,6 +132,4 @@ const AudioRecorder = ({
       </div>
     </div>
   );
-};
-
-export default AudioRecorder;
+}
