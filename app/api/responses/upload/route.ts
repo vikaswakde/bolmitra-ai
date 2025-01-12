@@ -1,9 +1,7 @@
+import { PromptUploadedFile } from "@/actions/upload-actions";
 import getDbConnection from "@/lib/db";
 import { currentUser } from "@clerk/nextjs/server";
-import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextResponse } from "next/server";
-
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
 export async function POST(req: Request) {
   try {
@@ -18,41 +16,20 @@ export async function POST(req: Request) {
       return new NextResponse("Missing required fields", { status: 400 });
     }
 
-    console.log("audioUrl", audioUrl);
-    console.log("questionId", questionId);
-
     // Get question text for context
     const sql = await getDbConnection();
     const [question] = await sql`
       SELECT question_text FROM questions WHERE id = ${questionId}
     `;
 
-    // Generate feedback using Gemini AI
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-    const prompt = `
-      As an expert communication coach, analyze this audio response to the question: "${question.question_text}"
-      
-      Audio URL: ${audioUrl}
-      
-      Please provide detailed feedback in the following JSON format:
-      {
-        "overallScore": number (1-100),
-        "feedback": {
-          "strengths": [string array of key strengths],
-          "improvements": [string array of areas for improvement],
-          "tips": [string array of actionable tips]
-        },
-        "metrics": {
-          "clarity": number (1-100),
-          "confidence": number (1-100),
-          "relevance": number (1-100),
-          "structure": number (1-100)
-        }
-      }
-    `;
+    if (!question) {
+      return new NextResponse("Question not found", { status: 404 });
+    }
 
-    const result = await model.generateContent(prompt);
-    const feedback = JSON.parse(result.response.text());
+    // Process audio with new Gemini capabilities
+    const result = await PromptUploadedFile(audioUrl, question.question_text);
+
+    console.log("result", result);
 
     // Save response and feedback to database
     const [response] = await sql`
@@ -60,48 +37,92 @@ export async function POST(req: Request) {
         user_id,
         question_id,
         audio_url,
+        overall_score,
         feedback_json,
-        metrics
+        metrics,
+        tokens_used
       ) VALUES (
         ${user.id},
         ${questionId},
         ${audioUrl},
-        ${feedback.feedback},
-        ${feedback.metrics}
+        ${result.overallScore},
+        ${result.feedback},
+        ${result.metrics},
+        ${result.tokensUsed}
       )
       RETURNING id
     `;
 
     // Update user progress
-    await sql`
-      INSERT INTO user_progress (
-        user_id,
-        category_id,
-        questions_attempted,
-        avg_score
+    // First check if record exists
+    const [existingProgress] = await sql`
+      SELECT user_id, category_id FROM user_progress 
+      WHERE user_id = ${user.id} 
+      AND category_id = (
+        SELECT category_id FROM questions WHERE id = ${questionId}
       )
-      SELECT 
-        ${user.id},
-        q.category_id,
-        COUNT(DISTINCT r.id),
-        AVG(CAST(r.feedback_json->>'overallScore' AS INTEGER))
-      FROM responses r
-      JOIN questions q ON r.question_id = q.id
-      WHERE r.user_id = ${user.id}
-      GROUP BY q.category_id
-      ON CONFLICT (user_id, category_id)
-      DO UPDATE SET
-        questions_attempted = EXCLUDED.questions_attempted,
-        avg_score = EXCLUDED.avg_score
     `;
+
+    if (existingProgress) {
+      // Update existing record
+      await sql`
+        UPDATE user_progress 
+        SET 
+          questions_attempted = (
+            SELECT COUNT(DISTINCT r.id)
+            FROM responses r
+            JOIN questions q ON r.question_id = q.id
+            WHERE r.user_id = ${user.id}
+            AND q.category_id = ${existingProgress.category_id}
+          ),
+          avg_score = (
+            SELECT AVG(r.overall_score)
+            FROM responses r
+            JOIN questions q ON r.question_id = q.id
+            WHERE r.user_id = ${user.id}
+            AND q.category_id = ${existingProgress.category_id}
+          )
+        WHERE user_id = ${user.id}
+        AND category_id = ${existingProgress.category_id}
+      `;
+    } else {
+      // Insert new record
+      await sql`
+        INSERT INTO user_progress (
+          user_id,
+          category_id,
+          questions_attempted,
+          avg_score
+        )
+        SELECT 
+          ${user.id},
+          q.category_id,
+          COUNT(DISTINCT r.id),
+          AVG(r.overall_score)
+        FROM responses r
+        JOIN questions q ON r.question_id = q.id
+        WHERE r.user_id = ${user.id}
+        GROUP BY q.category_id
+      `;
+    }
 
     return NextResponse.json({
       success: true,
       responseId: response.id,
-      feedback,
+      overallScore: response.overall_score,
+      feedback: result.feedback,
+      metrics: result.metrics,
+      tokensUsed: result.tokensUsed,
     });
   } catch (error) {
     console.error("Error processing response:", error);
-    return new NextResponse("Internal server error", { status: 500 });
+    return NextResponse.json(
+      {
+        success: false,
+        error: "Internal server error",
+        details: error instanceof Error ? error.message : "Unknown error",
+      },
+      { status: 500 }
+    );
   }
 }

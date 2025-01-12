@@ -27,7 +27,7 @@ export async function getCategoryQuestions(categoryId: string) {
     const category = await sql`
         SELECT * FROM categories WHERE id = ${categoryId}
       `;
-    console.log("Found category:", category);
+    // console.log("Found category:", category);
 
     const questions = await sql`
       SELECT * FROM questions 
@@ -35,7 +35,7 @@ export async function getCategoryQuestions(categoryId: string) {
       ORDER BY difficulty_level ASC, created_at ASC
     `;
 
-    console.log("Found questions:", questions);
+    // console.log("Found questions:", questions);
 
     return { success: true, data: questions };
   } catch (error) {

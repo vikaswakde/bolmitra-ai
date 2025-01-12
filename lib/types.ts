@@ -18,6 +18,7 @@ export interface Response {
   id: string;
   user_id: string;
   question_id: string;
+  overall_score: number;
   audio_url: string;
   feedback_json: any;
   metrics: any;

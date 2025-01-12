@@ -30,12 +30,13 @@ export async function saveResponse(
   userId: string,
   questionId: string,
   audioUrl: string,
+  overallScore: number
   feedback: any,
   metrics: any
 ) {
   return sql`
-      INSERT INTO responses (user_id, question_id, audio_url, feedback_json, metrics)
-      VALUES (${userId}, ${questionId}, ${audioUrl}, ${feedback}, ${metrics})
+      INSERT INTO responses (user_id, question_id, audio_url, feedback_json, metrics, overall_score)
+      VALUES (${userId}, ${questionId}, ${audioUrl}, ${feedback}, ${metrics} ${overallScore})
       RETURNING id
     `;
 }

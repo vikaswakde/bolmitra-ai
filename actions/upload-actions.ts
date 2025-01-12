@@ -4,32 +4,19 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import path from "path";
 import fs from "fs/promises";
 
-const fileManager = new GoogleAIFileManager(process.env.GOOGLE_API_KEY!);
+const fileManager = new GoogleAIFileManager(process.env.GEMINI_API_KEY!);
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-export async function transcribeUploadedFile(res: any) {
-  console.log("Reacived response in transcribe: ", res);
-
-  if (!res) {
-    return {
-      success: false,
-      message: "File upload failed",
-      data: null,
-    };
-  }
-
-  const {
-    url: fileUrl,
-    serverData: { userId },
-  } = res[0];
-
+export async function PromptUploadedFile(
+  audioUrl: string,
+  questionText: string
+) {
   try {
-
     const mediaPath = path.join(process.cwd(), "public", "media");
     await fs.mkdir(mediaPath, { recursive: true });
 
     // Download file from Uploadthing
-    const response = await fetch(fileUrl);
+    const response = await fetch(audioUrl);
     const arrayBuffer = await response.arrayBuffer();
 
     // Save to local media directory
@@ -40,9 +27,8 @@ export async function transcribeUploadedFile(res: any) {
     console.log("this is local file path", filePath);
 
     // Now use the local path with Google AI
-
     const uploadResult = await fileManager.uploadFile(filePath, {
-      mimeType: "audio/mp3",
+      mimeType: "audio/webm",
       displayName: "Audio sample",
     });
 
@@ -62,18 +48,64 @@ export async function transcribeUploadedFile(res: any) {
 
     // Clean up: Delete the temp file
     await fs.unlink(filePath);
-    
 
     // View the response;
     console.log(
       `Uploaded file ${uploadResult.file.displayName} as ${uploadResult.file.uri}`
     );
 
-    const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY!);
+    // Use GEMINI_API_KEY instead of GOOGLE_API_KEY
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
+    const prompt = `You are an expert communication coach. Analyze this audio response to the question: "${questionText}"
+    
+    Provide a detailed analysis in JSON format with:
+    1. Overall assessment of the response
+    2. Speaking clarity and confidence
+    3. Content relevance and structure
+    4. Specific strengths and areas for improvement
+    
+    Format the response exactly as follows:
+    {
+      "overallScore": <number between 1-100>,
+      "feedback": {
+        "strengths": [<array of specific strengths>],
+        "improvements": [<array of areas to improve>],
+        "tips": [<array of actionable suggestions>]
+      },
+      "metrics": {
+        "clarity": <number between 1-100>,
+        "confidence": <number between 1-100>,
+        "relevance": <number between 1-100>,
+        "structure": <number between 1-100>
+      }
+    }`;
+
+    // Get token count
+    const tokenCount = await model.countTokens({
+      generateContentRequest: {
+        contents: [
+          {
+            role: "user",
+            parts: [
+              {
+                fileData: {
+                  fileUri: uploadResult.file.uri,
+                  mimeType: uploadResult.file.mimeType,
+                },
+              },
+              {
+                text: prompt,
+              },
+            ],
+          },
+        ],
+      },
+    });
+
     const transcriptions = await model.generateContent([
-      "Tell me about this audio clip",
+      prompt,
       {
         fileData: {
           fileUri: uploadResult.file.uri,
@@ -82,14 +114,23 @@ export async function transcribeUploadedFile(res: any) {
       },
     ]);
 
-    const aiAnswer = transcriptions.response.text()
+    const aiAnswer = transcriptions.response;
+    const rawText = await aiAnswer.text();
 
-    console.log("answer from gemini", transcriptions.response.text());
+    console.log("question ai got ==>", prompt);
 
+    console.log("ai answer ==>", rawText);
+
+    // Extract just the JSON part from the response
+    const jsonMatch = rawText.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) {
+      throw new Error("Could not extract JSON from response");
+    }
+
+    const parsedResponse = JSON.parse(jsonMatch[0]);
     return {
-      success: true,
-      message: "file transcribed successfully",
-      data: { aiAnswer, userId },
+      ...parsedResponse,
+      tokensUsed: tokenCount.totalTokens,
     };
   } catch (error) {
     console.error("Error processing file", error);

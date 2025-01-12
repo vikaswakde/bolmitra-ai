@@ -130,7 +130,6 @@ export default function UploadForm() {
             title: "Transcription complete!",
             description: "Your file has been processed successfully",
           });
-          // then generate blog post
         }
       } catch (error) {
         console.error("Error in handleTranscribe:", error);

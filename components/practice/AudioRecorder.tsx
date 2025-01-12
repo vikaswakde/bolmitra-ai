@@ -9,11 +9,13 @@ import { useUploadThing } from "@/utils/uploadthing";
 interface AudioRecorderProps {
   onRecordingComplete: (audioUrl: string) => void;
   maxDuration?: number;
+  isDisabled?: boolean;
 }
 
 export default function AudioRecorder({
   onRecordingComplete,
   maxDuration = 60,
+  isDisabled,
 }: AudioRecorderProps) {
   const [isRecording, setIsRecording] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -25,14 +27,14 @@ export default function AudioRecorder({
   const handleUpload = async (audioBlob: Blob) => {
     try {
       setIsProcessing(true);
-      
+
       // Convert blob to File object
       const file = new File([audioBlob], "recording.webm", {
         type: "audio/webm",
       });
 
       const uploadResponse = await startUpload([file]);
-      
+
       if (!uploadResponse?.[0]?.url) {
         throw new Error("Upload failed");
       }
@@ -42,8 +44,9 @@ export default function AudioRecorder({
       console.error("Upload error:", error);
       toast({
         title: "Error uploading audio",
-        description: error instanceof Error ? error.message : "Unknown error occurred",
-        variant: "destructive"
+        description:
+          error instanceof Error ? error.message : "Unknown error occurred",
+        variant: "destructive",
       });
     } finally {
       setIsProcessing(false);
@@ -65,19 +68,19 @@ export default function AudioRecorder({
       };
 
       mediaRecorderRef.current.onstop = () => {
-        const audioBlob = new Blob(chunksRef.current, { type: 'audio/webm' });
+        const audioBlob = new Blob(chunksRef.current, { type: "audio/webm" });
         handleUpload(audioBlob);
-        stream.getTracks().forEach(track => track.stop());
+        stream.getTracks().forEach((track) => track.stop());
       };
 
       mediaRecorderRef.current.start();
       setIsRecording(true);
     } catch (error) {
-      console.error('Error accessing microphone:', error);
+      console.error("Error accessing microphone:", error);
       toast({
         title: "Error Starting Recording",
         description: "Failed to access microphone",
-        variant: "destructive"
+        variant: "destructive",
       });
     }
   };

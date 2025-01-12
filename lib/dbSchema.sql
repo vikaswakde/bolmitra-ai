@@ -35,8 +35,10 @@ CREATE TABLE responses (
     user_id VARCHAR(255) NOT NULL,
     question_id uuid NOT NULL,
     audio_url TEXT NOT NULL,
+    overall_score NUMBER,
     feedback_json JSONB,
     metrics JSONB,
+    tokens_used INTEGER,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT responses_pkey PRIMARY KEY (id),
     CONSTRAINT fk_question FOREIGN KEY (question_id) REFERENCES questions(id)
