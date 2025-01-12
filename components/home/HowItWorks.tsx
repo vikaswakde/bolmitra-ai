@@ -5,7 +5,7 @@ type Props = {};
 
 const HowItWorks = (props: Props) => {
   return (
-    <section className="realtive py-24 overflow-hidden">
+    <section className="relative py-24 overflow-hidden">
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 -z-10 transform-gpu overflow-hidden blur-3xl"
@@ -24,13 +24,13 @@ const HowItWorks = (props: Props) => {
         </h2>
       </div>
       <h3 className="font-semibold flex items-center justify-center mb-24 text-center">
-        Easily repurpose your content into SEO focused blog posts or Twitter
-        Threads.
+        Transform raw audio into personalized intelligence and actionable
+        feedback.
       </h3>
       <div className="flex items-center justify-center gap-4 lg:gap-24">
         <div className="flex flex-col gap-4 items-center justify-center ">
-          <p className="text-7xl scale-x-[-1]">🎥</p>
-          <p className="text-center font-medium">Upload a Video</p>
+          <p className="text-7xl scale-x-[-1]">🎤</p>
+          <p className="text-center font-medium">Record Your Audio</p>
         </div>
         <MoveRightIcon
           size={64}
@@ -41,7 +41,7 @@ const HowItWorks = (props: Props) => {
           <p className="flex items-center justify-center">
             <BrainIcon size={64} strokeWidth={0.5} />
           </p>
-          <p className="text-center font-medium">AI Magic ✨</p>
+          <p className="text-center font-medium">AI-Powered Analysis ✨</p>
         </div>
         <MoveRightIcon
           size={64}
@@ -49,9 +49,9 @@ const HowItWorks = (props: Props) => {
           className="text-purple-500"
         />
         <div className="flex flex-col gap-4 items-center justify-center">
-          <p className="text-7xl scale-x-[-1]">📜</p>
-          <p className="text-center font-medium">Upload a Video</p>
-        </div>{" "}
+          <p className="text-7xl scale-x-[-1]">📊</p>
+          <p className="text-center font-medium">Receive Detailed Feedback</p>
+        </div>
       </div>
     </section>
   );

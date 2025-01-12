@@ -48,7 +48,7 @@ const Header = (props: Props) => {
       <div className="flex lg:justify-end lg:flex-1 gap-2">
         <SignedIn>
           <div className="flex gap-4 items-center">
-            <NavLink href="/dashboard">Upload a Video</NavLink>
+            <NavLink href="/dashboard">Start Practice</NavLink>
             {/* Profile */}
             <UserButton />
           </div>
