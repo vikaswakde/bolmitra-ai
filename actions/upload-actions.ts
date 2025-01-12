@@ -1,8 +1,9 @@
 "use server";
 import { GoogleAIFileManager, FileState } from "@google/generative-ai/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import path from "path";
-import fs from "fs/promises";
+import { writeFile } from "fs/promises";
+import { join } from "path";
+import os from "os";
 
 const fileManager = new GoogleAIFileManager(process.env.GEMINI_API_KEY!);
 
@@ -12,25 +13,37 @@ export async function PromptUploadedFile(
   questionText: string
 ) {
   try {
-    const mediaPath = path.join(process.cwd(), "public", "media");
-    await fs.mkdir(mediaPath, { recursive: true });
-
     // Download file from Uploadthing
     const response = await fetch(audioUrl);
     const arrayBuffer = await response.arrayBuffer();
 
-    // Save to local media directory
-    const fileName = `uploa-${Date.now()}.mp3`;
-    const filePath = path.join(mediaPath, fileName);
-    await fs.writeFile(filePath, Buffer.from(arrayBuffer));
+    // Create a temporary file in the OS temp directory
+    const tempDir = os.tmpdir();
+    const tempFilePath = join(tempDir, `upload-${Date.now()}.webm`);
 
-    console.log("this is local file path", filePath);
+    // Write to temp directory (this is allowed in production)
+    await writeFile(tempFilePath, Buffer.from(arrayBuffer));
 
-    // Now use the local path with Google AI
-    const uploadResult = await fileManager.uploadFile(filePath, {
+    // Now use the temp file path with Google AI
+    const uploadResult = await fileManager.uploadFile(tempFilePath, {
       mimeType: "audio/webm",
       displayName: "Audio sample",
     });
+
+    console.log("This is uploadResult ==>", uploadResult);
+
+    // // Create file object directly in memory
+    // const fileInMemory = {
+    //   data: Buffer.from(arrayBuffer),
+    //   mimeType: "audio/webm",
+    //   name: `upload-${Date.now()}.mp3`,
+    // };
+
+    // // Now use the local path with Google AI
+    // const uploadResult = await fileManager.uploadFile(fileInMemory.data, {
+    //   mimeType: "audio/webm",
+    //   displayName: "Audio sample",
+    // });
 
     let file = await fileManager.getFile(uploadResult.file.name);
     while (file.state === FileState.PROCESSING) {
@@ -47,7 +60,7 @@ export async function PromptUploadedFile(
     }
 
     // Clean up: Delete the temp file
-    await fs.unlink(filePath);
+    // await fs.unlink(filePath);
 
     // View the response;
     console.log(

@@ -27,9 +27,24 @@ export async function POST(req: Request) {
     }
 
     // Process audio with new Gemini capabilities
-    const result = await PromptUploadedFile(audioUrl, question.question_text);
+    let result;
+    try {
+      result = await PromptUploadedFile(audioUrl, question.question_text);
 
-    console.log("result", result);
+      if (!result.overallScore || !result.feedback || !result.metrics) {
+        console.error("Invalid AI response:", result);
+        return NextResponse.json(
+          { success: false, error: "Invalid AI response format" },
+          { status: 500 }
+        );
+      }
+    } catch (error) {
+      console.error("AI Processing error:", error);
+      return NextResponse.json(
+        { success: false, error: "AI Processing failed" },
+        { status: 500 }
+      );
+    }
 
     // Save response and feedback to database
     const [response] = await sql`
