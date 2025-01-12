@@ -3,9 +3,7 @@ import { Button } from "../ui/button";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 
-type Props = {};
-
-const Banner = (props: Props) => {
+const Banner = () => {
   return (
     <section className="lg:max-w-6xl mx-auto flex flex-col items-center z-0 justify-center py-28 sm:pt-32 transition-all animate-in">
       <h1 className="py-6 text-center">

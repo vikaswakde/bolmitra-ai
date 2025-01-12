@@ -1,10 +1,10 @@
 "use client";
+import { useToast } from "@/hooks/use-toast";
 import { Question } from "@/lib/types";
+import { Loader2Icon } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import AudioRecorder from "./AudioRecorder";
-import { useToast } from "@/hooks/use-toast";
-import { useRouter } from "next/navigation";
-import { Loader2Icon } from "lucide-react";
 
 interface PracticeSessionProps {
   questions: Question[];
@@ -13,6 +13,7 @@ interface PracticeSessionProps {
 }
 const PracticeSession = ({
   questions,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   categoryId,
   userPlan,
 }: PracticeSessionProps) => {

@@ -1,9 +1,6 @@
 import { BrainIcon, MoveRightIcon } from "lucide-react";
-import React from "react";
 
-type Props = {};
-
-const HowItWorks = (props: Props) => {
+const HowItWorks = () => {
   return (
     <section className="relative py-24 overflow-hidden">
       <div

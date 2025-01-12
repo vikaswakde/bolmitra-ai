@@ -1,10 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
-import React, { useRef, useState } from "react";
-import Timer from "./Timer";
-import { Button } from "../ui/button";
-import { Loader2Icon, MicIcon, SquareIcon } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useUploadThing } from "@/utils/uploadthing";
+import { Loader2Icon, MicIcon, SquareIcon } from "lucide-react";
+import { useRef, useState } from "react";
+import { Button } from "../ui/button";
+import Timer from "./Timer";
 
 interface AudioRecorderProps {
   onRecordingComplete: (audioUrl: string) => void;

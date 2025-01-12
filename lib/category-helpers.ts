@@ -24,6 +24,7 @@ export async function getCategoryQuestions(categoryId: string) {
     console.log("Fetching questions for categoryId:", categoryId);
 
     // First, let's verify the category exists
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const category = await sql`
         SELECT * FROM categories WHERE id = ${categoryId}
       `;

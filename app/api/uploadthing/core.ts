@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { currentUser } from "@clerk/nextjs/server";
 import { createUploadthing, type FileRouter } from "uploadthing/next";
 import { UploadThingError } from "uploadthing/server";
@@ -22,8 +23,8 @@ export const ourFileRouter = {
 
       console.log("file url", file);
 
-      // !!! Whatever is returned here is sent to the clientside `onClientUploadComplete` callback
-      return { userId: metadata.userId, file, url: file.url };
+      // Return only the userId and url to match the expected return type
+      return { userId: metadata.userId, url: file.url };
     }),
 } satisfies FileRouter;
 

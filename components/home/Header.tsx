@@ -1,10 +1,7 @@
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
-import { GhostIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-
-type Props = {};
 
 const NavLink = ({
   href,
@@ -23,7 +20,7 @@ const NavLink = ({
   );
 };
 
-const Header = (props: Props) => {
+const Header = () => {
   return (
     <nav className="container flex items-center justify-between px-8 py-4 mx-auto base">
       <div className="flex lg:flex-1">
