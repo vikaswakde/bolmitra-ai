@@ -25,7 +25,7 @@ const Pricing = () => {
             },
             {
               name: "Pro Tier",
-              price: "29",
+              price: "12",
               description: "Unlimited access to all categories and questions.",
               items: [
                 "Advanced feedback analysis",
@@ -35,6 +35,7 @@ const Pricing = () => {
                 "Custom practice sessions",
               ],
               id: "pro",
+              // TODO: add payment link
               paymentLink: "/subscribe",
             },
           ].map(({ name, price, description, items, id, paymentLink }, idx) => (

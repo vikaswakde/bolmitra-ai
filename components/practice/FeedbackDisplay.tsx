@@ -65,7 +65,7 @@ export default function FeedbackDisplay({ feedback }: FeedbackDisplayProps) {
       </div>
 
       <div className="grid grid-cols-2 gap-4">
-        {Object.entries(feedback.metrics).map(([key, value]) => (
+        {Object.entries(feedback.metrics || {}).map(([key, value]) => (
           <div key={key} className="text-center">
             <h4 className="text-sm font-medium capitalize">{key}</h4>
             <div className="text-lg font-semibold">{value}%</div>
