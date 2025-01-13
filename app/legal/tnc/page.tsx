@@ -62,7 +62,8 @@ export default function TermsPage() {
 
               <h3 className="text-xl text-white mt-6">4. Privacy Policy</h3>
               <p className="text-gray-300">
-                We take your privacy seriously. Here's how we handle your data:
+                We take your privacy seriously. Here&apos;s how we handle your
+                data:
               </p>
               <ul className="text-gray-300 list-disc pl-6">
                 <li>
@@ -91,7 +92,7 @@ export default function TermsPage() {
                 6. Service Limitations
               </h3>
               <p className="text-gray-300">
-                - We aim for 99.9% uptime but don't guarantee uninterrupted
+                - We aim for 99.9% uptime but don&apos;t guarantee uninterrupted
                 service
                 <br />
                 - AI responses are automated and may not be 100% accurate
@@ -125,7 +126,7 @@ export default function TermsPage() {
 
             <h3 className="text-xl text-white mt-6">9. Contact Us</h3>
             <p className="text-gray-300">
-              For general inquiries and support:
+              jj For general inquiries and support:
               <br />
               Email: vikaswakdepc@gmail.com
               <br />
