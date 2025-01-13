@@ -21,9 +21,9 @@ const footerLinks = [
   {
     title: "Company",
     links: [
-      { label: "About", href: "#" },
-      { label: "Shipping and Delivery", href: "/#" },
-      { label: "Contact Us", href: "#" },
+      { label: "About", href: "/legal/tnc" },
+      { label: "Shipping and Delivery", href: "/legal/tnc" },
+      { label: "Contact Us", href: "/legal/tnc" },
     ],
   },
 ];
