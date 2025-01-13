@@ -13,11 +13,11 @@ const fontSans = FontSans({
 });
 
 export const metadata: Metadata = {
-  title: "LipiMitraAI - Video to Blog/Tweet Converter",
+  title: "Bol Mitra - Your AI companion to master communication",
   description:
-    "Transform your videos into engaging blogs and tweet threads automatically with LipiMitraAI",
+    "Transform raw audio into personalized intelligence and actionable feedback with BolMita AI.",
   icons: {
-    icon: "/lipiMitra.png",
+    icon: "/bolMita.png",
   },
 };
 
@@ -37,7 +37,7 @@ export default function RootLayout({
         >
           <Header></Header>
           <main>{children}</main>
-          <Toaster  />
+          <Toaster />
         </body>
       </html>
     </ClerkProvider>

@@ -22,7 +22,7 @@ const Banner = () => {
         className="mt-6 text-xl rounded-full px-12 py-8 lg:mt-20 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-indigo-600 hover:to-purple-600 text-white font-bold shadow-lg hover:no-underline"
       >
         <Link href={"/pricing"} className="flex items-center gap-2">
-          <span className="relative">Get Started with LipiMitra</span>
+          <span className="relative">Get Started with BolMitra</span>
           <ArrowRight className="w-8 h-8 font-bold animate-pulse" />
         </Link>
       </Button>

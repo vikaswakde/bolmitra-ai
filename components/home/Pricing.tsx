@@ -25,7 +25,7 @@ const Pricing = () => {
             },
             {
               name: "Pro Tier",
-              price: "12",
+              price: "10",
               description: "Unlimited access to all categories and questions.",
               items: [
                 "Advanced feedback analysis",

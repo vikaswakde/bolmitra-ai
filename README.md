@@ -1,4 +1,4 @@
-# LipiMitra AI - Interactive Audio Analysis Platform
+# BolMita AI - Interactive Audio Analysis Platform
 
 ## Core Value Proposition
 

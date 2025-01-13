@@ -27,13 +27,15 @@ const Header = () => {
         <NavLink href="/">
           <span className="flex items-center gap-2 shrink-0 pt-1">
             <Image
-              src="/LipiMitra.png"
-              alt="LipiMitra Logo"
+              src="/bolMitra.png"
+              alt="bolMitra Logo"
               width={52}
               height={52}
               className="hover:rotate-12 transform transition duration-200 ease-in-out"
             />
-            <span className="font-extrabold text-lg pb-2 -ml-1">LipiMitra</span>
+            <span className="font-extrabold text-lg pb-2 -ml-3 pt-2">
+              BolMitra
+            </span>
           </span>
         </NavLink>
       </div>
