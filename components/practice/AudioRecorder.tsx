@@ -9,19 +9,24 @@ import Timer from "./Timer";
 
 interface AudioRecorderProps {
   onRecordingComplete: (audioUrl: string) => void;
+  onRecordingStart: () => void;
   maxDuration?: number;
   isDisabled?: boolean;
+  isLastQuestion: boolean;
 }
 
 export default function AudioRecorder({
   onRecordingComplete,
+  onRecordingStart,
   maxDuration = 60,
   isDisabled,
+  isLastQuestion,
 }: AudioRecorderProps) {
   const [isRecording, setIsRecording] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
+  const { toast } = useToast();
 
   const { startUpload } = useUploadThing("audioUploader");
 
@@ -54,9 +59,7 @@ export default function AudioRecorder({
     }
   };
 
-  const { toast } = useToast();
-
-  const startRecording = async () => {
+  const startSession = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       mediaRecorderRef.current = new MediaRecorder(stream);
@@ -68,50 +71,38 @@ export default function AudioRecorder({
         }
       };
 
-      mediaRecorderRef.current.onstop = () => {
-        const audioBlob = new Blob(chunksRef.current, { type: "audio/webm" });
-        handleUpload(audioBlob);
-        stream.getTracks().forEach((track) => track.stop());
-      };
-
       mediaRecorderRef.current.start();
       setIsRecording(true);
+      onRecordingStart();
     } catch (error) {
       console.error("Error accessing microphone:", error);
       toast({
-        title: "Error Starting Recording",
+        title: "Error Starting Session",
         description: "Failed to access microphone",
         variant: "destructive",
       });
     }
   };
 
-  const stopRecording = () => {
+  const stopSession = () => {
     if (mediaRecorderRef.current && isRecording) {
       mediaRecorderRef.current.stop();
       setIsRecording(false);
-    }
-  };
 
-  const handleTimeEnd = () => {
-    stopRecording();
+      mediaRecorderRef.current.onstop = () => {
+        const audioBlob = new Blob(chunksRef.current, { type: "audio/webm" });
+        handleUpload(audioBlob);
+      };
+    }
   };
 
   return (
     <div className="space-y-4">
-      {isRecording && (
-        <Timer
-          duration={maxDuration}
-          isRecording={isRecording}
-          onTimeEnd={handleTimeEnd}
-        />
-      )}
-
       <div className="flex justify-center gap-2">
         {!isRecording ? (
           <Button
-            onClick={startRecording}
-            disabled={isProcessing}
+            onClick={startSession}
+            disabled={isProcessing || isDisabled}
             size="lg"
             className="gap-2 rounded-2xl bg-purple-700/70 hover:bg-purple-600/60 shadow-lg"
           >
@@ -120,18 +111,20 @@ export default function AudioRecorder({
             ) : (
               <MicIcon className="w-4 h-4" />
             )}
-            {isProcessing ? "Processing..." : "Start Recording"}
+            {isProcessing ? "Processing..." : "Start Session"}
           </Button>
         ) : (
-          <Button
-            onClick={stopRecording}
-            variant="destructive"
-            size="lg"
-            className="gap-2 rounded-2xl shadow-sm border border-purple-500/10"
-          >
-            <SquareIcon className="w-4 h-4" />
-            Stop Recording
-          </Button>
+          isLastQuestion && (
+            <Button
+              onClick={stopSession}
+              variant="destructive"
+              size="lg"
+              className="gap-2 rounded-2xl shadow-sm border border-purple-500/10"
+            >
+              <SquareIcon className="w-4 h-4" />
+              Stop Session
+            </Button>
+          )
         )}
       </div>
     </div>

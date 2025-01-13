@@ -3,9 +3,16 @@ import { useToast } from "@/hooks/use-toast";
 import { Question } from "@/lib/types";
 import { Loader2Icon } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import AudioRecorder from "./AudioRecorder";
+import { Button } from "@/components/ui/button";
 
+export interface QuestionSegment {
+  questionId: string;
+  startTime: number;
+  endTime: number;
+  questionText: string;
+}
 interface PracticeSessionProps {
   questions: Question[];
   categoryId: string;
@@ -19,25 +26,73 @@ const PracticeSession = ({
 }: PracticeSessionProps) => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
+  const [segments, setSegments] = useState<QuestionSegment[]>([]);
+  const recordingStartTime = useRef<number | null>(null);
   const router = useRouter();
   const { toast } = useToast();
 
   const currentQuestion = questions[currentQuestionIndex];
 
+  const handleRecordingStart = () => {
+    setIsRecording(true);
+    recordingStartTime.current = Date.now();
+    // Add first question segment
+    setSegments([
+      {
+        questionId: questions[0].id,
+        startTime: 0,
+        endTime: 0,
+        questionText: questions[0].question_text,
+      },
+    ]);
+  };
+
+  const handleNextQuestion = () => {
+    if (currentQuestionIndex < questions.length - 1) {
+      const currentTime = Date.now();
+      const segmentTime =
+        (currentTime - (recordingStartTime.current || currentTime)) / 1000;
+
+      setSegments((prev) => {
+        const updated = [...prev];
+        if (updated[currentQuestionIndex]) {
+          updated[currentQuestionIndex].endTime = segmentTime;
+        }
+        return [
+          ...updated,
+          {
+            questionId: questions[currentQuestionIndex + 1].id,
+            startTime: segmentTime,
+            endTime: 0,
+            questionText: questions[currentQuestionIndex + 1].question_text,
+          },
+        ];
+      });
+
+      setCurrentQuestionIndex((prev) => prev + 1);
+    }
+  };
+
   const handleRecordingComplete = async (audioUrl: string) => {
     try {
       setIsProcessing(true);
 
-      toast({
-        title: "Processing your response ",
-        description: "This might take a few moments...⏳",
-      });
+      // Update the end time of the last segment
+      const currentTime = Date.now();
+      const segmentTime =
+        (currentTime - (recordingStartTime.current || currentTime)) / 1000;
+
+      const finalSegments = segments.map((seg, index) =>
+        index === currentQuestionIndex ? { ...seg, endTime: segmentTime } : seg
+      );
 
       const response = await fetch("/api/responses/upload", {
         method: "POST",
         body: JSON.stringify({
           audioUrl,
           questionId: currentQuestion.id,
+          segments: finalSegments, // Include segments in the API call
         }),
         headers: {
           "Content-Type": "application/json",
@@ -86,6 +141,8 @@ const PracticeSession = ({
     }
   };
 
+  const isLastQuestion = currentQuestionIndex === questions.length - 1;
+
   return (
     <div className="max-w-2xl mx-auto space-y-8">
       {isProcessing && (
@@ -96,20 +153,41 @@ const PracticeSession = ({
           </div>
         </div>
       )}
-      <div className="mb-8 border-dotted decoration-dotted  border-2 rounded-2xl px-4 py-5 border-purple-500/80 shadow-lg">
+      <div className="mb-8 border-dotted decoration-dotted border-2 rounded-2xl px-4 py-5 border-purple-500/80 shadow-lg">
         <h2 className="text-2xl font-bold mb-2 text-purple-700/70">
-          Question {currentQuestionIndex + 1}
+          Question {currentQuestionIndex + 1} of {questions.length}
         </h2>
-        <p className="text-lg text-gray-700 border  rounded-2xl px-5 py-3 shadow-md mt-5 border-purple-400/50 ">
+        <p className="text-lg text-gray-700 border rounded-2xl px-5 py-3 shadow-md mt-5 border-purple-400/50">
           {currentQuestion?.question_text}
         </p>
       </div>
 
-      <AudioRecorder
-        onRecordingComplete={handleRecordingComplete}
-        maxDuration={60}
-        isDisabled={isProcessing}
-      />
+      <div className="flex flex-col items-center gap-4">
+        <AudioRecorder
+          onRecordingComplete={handleRecordingComplete}
+          onRecordingStart={handleRecordingStart}
+          maxDuration={180}
+          isDisabled={isProcessing}
+          isLastQuestion={isLastQuestion}
+        />
+
+        {isRecording && !isLastQuestion && (
+          <Button
+            onClick={handleNextQuestion}
+            className="mt-4 bg-purple-600/80 hover:bg-purple-500/70"
+          >
+            Next Question →
+          </Button>
+        )}
+
+        {isRecording && (
+          <p className="text-sm text-gray-500 mt-2">
+            {isLastQuestion
+              ? "Click 'Stop Session' when you're done to get your feedback"
+              : "Click 'Next Question' when you're ready to continue"}
+          </p>
+        )}
+      </div>
 
       <div className="mt-4 text-center text-sm text-gray-500 flex items-center justify-center">
         {userPlan !== "free" && (

@@ -44,13 +44,6 @@ const FeedbackPage = async (props: {
           <Button variant="outline">Back to Dashboard</Button>
         </Link>
       </div>
-
-      <div className="bg-white rounded-lg shadow-lg p-6">
-        <h2 className="text-xl font-semibold mb-4">Question</h2>
-        <p className="text-gray-700 p-4 bg-gray-50 rounded-lg">
-          {response.question_text}
-        </p>
-      </div>
       <div className="bg-white rounded-lg shadow-lg">
         <FeedbackDisplay
           feedback={{
@@ -61,6 +54,7 @@ const FeedbackPage = async (props: {
             overall_score: response.overall_score,
             feedback_json: response.feedback_json,
             metrics: response.metrics,
+            questionFeedback: response.question_feedback,
             created_at: response.created_at,
             tokens_used: response.tokens_used,
             question_text: response.question_text,

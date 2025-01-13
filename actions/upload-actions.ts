@@ -7,10 +7,23 @@ import os from "os";
 
 const fileManager = new GoogleAIFileManager(process.env.GEMINI_API_KEY!);
 
+interface QuestionSegment {
+  questionId: string;
+  startTime: number;
+  endTime: number;
+  questionText: string;
+}
+
+interface UploadRequest {
+  audioUrl: string;
+  segments: QuestionSegment[];
+  questionId: string;
+}
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export async function PromptUploadedFile(
   audioUrl: string,
-  questionText: string
+  segments: QuestionSegment[]
 ) {
   try {
     // Download file from Uploadthing
@@ -31,6 +44,7 @@ export async function PromptUploadedFile(
     });
 
     console.log("This is uploadResult ==>", uploadResult);
+    console.log("This is segments ==>", segments);
 
     // // Create file object directly in memory
     // const fileInMemory = {
@@ -71,13 +85,24 @@ export async function PromptUploadedFile(
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-    const prompt = `You are an expert communication coach. Analyze this audio response to the question: "${questionText}"
+    const questionSegments = segments
+      .map(
+        (seg) => `[${seg.startTime}s - ${seg.endTime}s]: "${seg.questionText}"`
+      )
+      .join("\n");
+
+    console.log("this is question segment");
+
+    const prompt = `You are an expert communication coach. Analyze this audio response to multiple questions. 
+    The audio contains responses to the following questions at these timestamps:
+    ${questionSegments}
     
     Provide a detailed analysis in JSON format with:
-    1. Overall assessment of the response
+    1. Overall assessment of the responses
     2. Speaking clarity and confidence
     3. Content relevance and structure
     4. Specific strengths and areas for improvement
+    5. Individual feedback for each question segment
     
     Format the response exactly as follows:
     {
@@ -92,6 +117,16 @@ export async function PromptUploadedFile(
         "confidence": <number between 1-100>,
         "relevance": <number between 1-100>,
         "structure": <number between 1-100>
+      },
+      "questionFeedback": {
+        "<question itself>": [
+          {
+            "timestamp": "<start-end>",
+            "score": <number between 1-100>,
+            "feedback": "<specific feedback for this answer>",
+            "improvedVersion": "<a short and to the point improved version>"
+          }
+        ]
       }
     }`;
 
@@ -133,6 +168,8 @@ export async function PromptUploadedFile(
     console.log("question ai got ==>", prompt);
 
     console.log("ai answer ==>", rawText);
+
+    console.log("token count ===>", tokenCount.totalTokens);
 
     // Extract just the JSON part from the response
     const jsonMatch = rawText.match(/\{[\s\S]*\}/);

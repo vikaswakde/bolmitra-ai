@@ -37,6 +37,7 @@ CREATE TABLE responses (
     audio_url TEXT NOT NULL,
     overall_score NUMBER,
     feedback_json JSONB,
+    question_feedback JSONB,
     metrics JSONB,
     tokens_used INTEGER,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

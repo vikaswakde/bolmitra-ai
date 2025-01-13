@@ -10,7 +10,7 @@ export async function POST(req: Request) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const { audioUrl, questionId } = await req.json();
+    const { audioUrl, questionId, segments } = await req.json();
 
     if (!audioUrl || !questionId) {
       return new NextResponse("Missing required fields", { status: 400 });
@@ -29,9 +29,14 @@ export async function POST(req: Request) {
     // Process audio with new Gemini capabilities
     let result;
     try {
-      result = await PromptUploadedFile(audioUrl, question.question_text);
+      result = await PromptUploadedFile(audioUrl, segments);
 
-      if (!result.overallScore || !result.feedback || !result.metrics) {
+      if (
+        !result.overallScore ||
+        !result.feedback ||
+        !result.metrics ||
+        !result.questionFeedback
+      ) {
         console.error("Invalid AI response:", result);
         return NextResponse.json(
           { success: false, error: "Invalid AI response format" },
@@ -47,6 +52,21 @@ export async function POST(req: Request) {
     }
 
     // Save response and feedback to database
+    const feedbackJson = JSON.stringify(result.feedback);
+    const metricsJson = JSON.stringify(result.metrics);
+    const questionFeedbackJson = JSON.stringify(result.questionFeedback);
+
+    console.log("Inserting response with values:", {
+      userId: user.id,
+      questionId,
+      audioUrl,
+      overallScore: result.overallScore,
+      feedback: feedbackJson,
+      metrics: metricsJson,
+      questionFeedback: questionFeedbackJson,
+      tokensUsed: result.tokensUsed,
+    });
+
     const [response] = await sql`
       INSERT INTO responses (
         user_id,
@@ -55,14 +75,16 @@ export async function POST(req: Request) {
         overall_score,
         feedback_json,
         metrics,
+        question_feedback,
         tokens_used
       ) VALUES (
         ${user.id},
         ${questionId},
         ${audioUrl},
         ${result.overallScore},
-        ${result.feedback},
-        ${result.metrics},
+        ${feedbackJson},
+        ${metricsJson},
+        ${questionFeedbackJson},
         ${result.tokensUsed}
       )
       RETURNING id
@@ -127,6 +149,7 @@ export async function POST(req: Request) {
       overallScore: response.overall_score,
       feedback: result.feedback,
       metrics: result.metrics,
+      questionFeedback: result.question_feedback,
       tokensUsed: result.tokensUsed,
     });
   } catch (error) {
