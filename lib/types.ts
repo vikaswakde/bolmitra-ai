@@ -3,6 +3,8 @@ export interface Category {
   id: string;
   name: string;
   description: string;
+  context?: string;
+  is_custom?:boolean;
   created_at: string;
 }
 

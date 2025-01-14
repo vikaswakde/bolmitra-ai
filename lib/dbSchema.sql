@@ -16,6 +16,8 @@ CREATE TABLE categories (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     name VARCHAR(100) NOT NULL,
     description TEXT,
+    context TEXT,
+    is_custom BOOLEAN DEFAULT false,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT categories_pkey PRIMARY KEY (id)
 );

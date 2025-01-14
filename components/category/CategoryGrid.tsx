@@ -3,11 +3,13 @@ import { cn } from "@/lib/utils";
 import {
   ArrowRightIcon,
   BookOpenIcon,
-  ComputerIcon,
   MicIcon,
-  PresentationIcon,
+  PresentationIcon
 } from "lucide-react";
 import Link from "next/link";
+import { CreateCategoryButton } from "./CreateCategoryButton";
+import { DeleteCategory } from "./DeleteCategory";
+import { RegenerateQuestions } from "./RegenerateQuestions";
 
 interface CategoryGridProps {
   categories: Category[];
@@ -18,14 +20,13 @@ const categoryIcons = {
   "Interview Prep": <MicIcon className="w-6 h-6" />,
   "Public Speaking": <PresentationIcon className="w-6 h-6" />,
   "Sales Pitch": <BookOpenIcon className="w-6 h-6" />,
-  "test": <ComputerIcon className="w-6 h-6" />,
 };
 
 export default function CategoryGrid({
   categories,
   userPlan,
 }: CategoryGridProps) {
-  const isPro = userPlan === "pro";
+  const isPro = userPlan !== "pro";
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -35,7 +36,7 @@ export default function CategoryGrid({
           <div
             key={category.id}
             className={cn(
-              "relative group rounded-2xl border border-purple-500/20 shadow-sm p-6 hover:border-purple-200 transition-all",
+              "relative group rounded-2xl border b border-gray-200  shadow-sm p-6 hover:border-purple-200 transition-all",
               isLocked && "opacity-60"
             )}
           >
@@ -51,19 +52,29 @@ export default function CategoryGrid({
               )}
             </div>
             <p className="mt-2 text-gray-600">{category.description}</p>
-            <Link
-              href={isLocked ? "/#pricing" : `/practice/${category.id}`}
-              className={cn(
-                "mt-4 inline-flex items-center text-purple-600 hover:text-purple-700 border px-2 py-1  rounded-2xl border-purple-600/40 shadow-lg",
-                isLocked && "pointer-events-none opacity-50"
+            <div className="flex  items-baseline justify-between  w-full gap-1">
+              <Link
+                href={isLocked ? "/#pricing" : `/practice/${category.id}`}
+                className={cn(
+                  "mt-4 inline-flex items-center text-purple-600 hover:text-purple-700 border px-2 py-1  rounded-2xl border-purple-600/40 shadow-lg",
+                  isLocked && "pointer-events-none opacity-50"
+                )}
+              >
+                Start Practice
+                <ArrowRightIcon className="ml-2 w-4 h-4" />
+              </Link>
+              {/* Only show regenerate option for custom categories */}
+              {category.is_custom && (
+                <div>
+                  <RegenerateQuestions category={category} />
+                  <DeleteCategory category={category} />
+                </div>
               )}
-            >
-              Start Practice
-              <ArrowRightIcon className="ml-2 w-4 h-4" />
-            </Link>
+            </div>
           </div>
         );
       })}
+      <CreateCategoryButton userPlan={userPlan} />
     </div>
   );
 }
