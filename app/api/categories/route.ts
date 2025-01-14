@@ -19,7 +19,7 @@ export async function POST(req: Request) {
     //   return new NextResponse("Pro plan required", { status: 403 });
     // }
 
-    const { name, context, questionCount, difficulty } = await req.json();
+    const { name, context } = await req.json();
 
     const sql = await getDbConnection();
 

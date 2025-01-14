@@ -5,7 +5,6 @@ import { Loader2Icon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useRef } from "react";
 import AudioRecorder from "./AudioRecorder";
-import { Button } from "@/components/ui/button";
 
 export interface QuestionSegment {
   questionId: string;
