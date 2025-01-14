@@ -42,7 +42,7 @@ const Header = () => {
       <div className="flex lg:justify-center  gap-4 lg:gap-12 lg:items-center">
         <NavLink href="/#pricing">Pricing</NavLink>
         <span className="border"></span>
-        <NavLink href="/#posts">Your Posts</NavLink>
+        <NavLink href="/feedback">Feedback 4u</NavLink>
       </div>
       <div className="flex lg:justify-end lg:flex-1 gap-2">
         <SignedIn>

@@ -52,7 +52,7 @@ export default function CategoryGrid({
             </div>
             <p className="mt-2 text-gray-600">{category.description}</p>
             <Link
-              href={isLocked ? "/pricing" : `/practice/${category.id}`}
+              href={isLocked ? "/#pricing" : `/practice/${category.id}`}
               className={cn(
                 "mt-4 inline-flex items-center text-purple-600 hover:text-purple-700 border px-2 py-1  rounded-2xl border-purple-600/40 shadow-lg",
                 isLocked && "pointer-events-none opacity-50"

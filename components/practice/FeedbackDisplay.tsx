@@ -5,29 +5,29 @@ interface FeedbackDisplayProps {
     id: string;
     user_id: string;
     question_id: string;
-    audio_url: string;
-    overall_score: number;
-    feedback_json: {
-      tips: string[];
-      strengths: string[];
-      improvements: string[];
+    audio_url?: string;
+    overall_score?: number;
+    feedback_json?: {
+      tips?: string[];
+      strengths?: string[];
+      improvements?: string[];
     };
-    metrics: {
-      clarity: number;
-      confidence: number;
-      relevance: number;
-      structure: number;
+    metrics?: {
+      clarity?: number;
+      confidence?: number;
+      relevance?: number;
+      structure?: number;
     };
-    created_at: string;
-    tokens_used: number;
-    question_text: string;
-    category_name: string;
-    questionFeedback: {
+    created_at?: string;
+    tokens_used?: number;
+    question_text?: string;
+    category_name?: string;
+    questionFeedback?: {
       [question: string]: {
-        timestamp: string;
-        score: number;
-        feedback: string;
-        improvedVersion: string;
+        timestamp?: string;
+        score?: number;
+        feedback?: string;
+        improvedVersion?: string;
       }[];
     };
   };
@@ -54,18 +54,18 @@ export default function FeedbackDisplay({ feedback }: FeedbackDisplayProps) {
           Interview Performance Analysis
         </h2>
         <div className="text-5xl font-bold text-purple-600 mb-4">
-          {feedback.overall_score}%
+          {feedback.overall_score !== undefined ? feedback.overall_score : 0}%
         </div>
-        {feedback.tokens_used && (
+        {feedback.tokens_used ? (
           <div className="inline-block bg-white px-4 py-2 rounded-full shadow-sm">
             <p className="text-sm text-gray-600">
               Tokens: {feedback.tokens_used}
             </p>
             <p className="text-sm text-gray-600">
-              Cost: ${costs?.usd} / ₹{costs?.inr}
+              Cost: ${costs?.usd || 0} / ₹{costs?.inr || 0}
             </p>
           </div>
-        )}
+        ) : null}
       </div>
 
       {/* Metrics Grid */}
@@ -78,7 +78,9 @@ export default function FeedbackDisplay({ feedback }: FeedbackDisplayProps) {
             <h4 className="text-sm font-medium text-purple-600 capitalize mb-1">
               {key}
             </h4>
-            <div className="text-2xl font-bold">{value}%</div>
+            <div className="text-2xl font-bold">
+              {value !== undefined ? value : 0}%
+            </div>
           </div>
         ))}
       </div>
@@ -92,7 +94,7 @@ export default function FeedbackDisplay({ feedback }: FeedbackDisplayProps) {
               Key Strengths
             </h4>
             <ul className="space-y-2">
-              {feedback.feedback_json.strengths.map((strength, i) => (
+              {(feedback.feedback_json?.strengths || []).map((strength, i) => (
                 <li key={i} className="flex items-start">
                   <span className="text-green-500 mr-2">✓</span>
                   <span>{strength}</span>
@@ -107,7 +109,7 @@ export default function FeedbackDisplay({ feedback }: FeedbackDisplayProps) {
               Improvement Tips
             </h4>
             <ul className="space-y-2">
-              {feedback.feedback_json.tips.map((tip, i) => (
+              {(feedback.feedback_json?.tips || []).map((tip, i) => (
                 <li key={i} className="flex items-start">
                   <span className="text-blue-500 mr-2">💡</span>
                   <span>{tip}</span>
@@ -124,12 +126,14 @@ export default function FeedbackDisplay({ feedback }: FeedbackDisplayProps) {
               Areas for Improvement
             </h4>
             <ul className="space-y-2">
-              {feedback.feedback_json.improvements.map((improvement, i) => (
-                <li key={i} className="flex items-start">
-                  <span className="text-amber-500 mr-2">⚡</span>
-                  <span>{improvement}</span>
-                </li>
-              ))}
+              {(feedback.feedback_json?.improvements || []).map(
+                (improvement, i) => (
+                  <li key={i} className="flex items-start">
+                    <span className="text-amber-500 mr-2">⚡</span>
+                    <span>{improvement}</span>
+                  </li>
+                )
+              )}
             </ul>
           </div>
         </div>
@@ -141,24 +145,26 @@ export default function FeedbackDisplay({ feedback }: FeedbackDisplayProps) {
           Question-by-Question Analysis
         </h4>
         <div className="space-y-6">
-          {Object.entries(feedback.questionFeedback).map(
+          {Object.entries(feedback.questionFeedback || {}).map(
             ([question, qFeedbacks], i) => (
               <div key={i} className="bg-white p-4 rounded-lg shadow-sm">
                 <div className="flex justify-between items-center mb-2">
                   <h5 className="font-semibold text-purple-800">{question}</h5>
                   <span className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm">
-                    Score: {qFeedbacks[0].score}%
+                    Score: {qFeedbacks[0]?.score || 0}%
                   </span>
                 </div>
                 {qFeedbacks.map((qFeedback, j) => (
                   <div key={j}>
                     <p className="text-gray-600 text-sm mb-2">
-                      Time: {qFeedback.timestamp}
+                      Time: {qFeedback.timestamp || "N/A"}
                     </p>
-                    <p className="text-gray-700 mb-3">{qFeedback.feedback}</p>
+                    <p className="text-gray-700 mb-3">
+                      {qFeedback.feedback || "No feedback provided."}
+                    </p>
                     <div className="bg-green-50 p-3 rounded-md">
                       <p className="text-sm font-medium text-green-800">
-                        Improved Version: {qFeedback.improvedVersion}
+                        Improved Version: {qFeedback.improvedVersion || "N/A"}
                       </p>
                     </div>
                   </div>
