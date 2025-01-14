@@ -31,6 +31,7 @@ const PracticeSession = ({
   const recordingStartTime = useRef<number | null>(null);
   const router = useRouter();
   const { toast } = useToast();
+  const [isPaused, setIsPaused] = useState(false);
 
   const currentQuestion = questions[currentQuestionIndex];
 
@@ -141,6 +142,15 @@ const PracticeSession = ({
     }
   };
 
+  const handleRecordingPause = () => {
+    setIsPaused(true);
+    handleNextQuestion();
+  };
+
+  const handleRecordingResume = () => {
+    setIsPaused(false);
+  };
+
   const isLastQuestion = currentQuestionIndex === questions.length - 1;
 
   return (
@@ -166,25 +176,19 @@ const PracticeSession = ({
         <AudioRecorder
           onRecordingComplete={handleRecordingComplete}
           onRecordingStart={handleRecordingStart}
+          onRecordingPause={handleRecordingPause}
+          onRecordingResume={handleRecordingResume}
           maxDuration={180}
           isDisabled={isProcessing}
           isLastQuestion={isLastQuestion}
+          isPaused={isPaused}
         />
 
-        {isRecording && !isLastQuestion && (
-          <Button
-            onClick={handleNextQuestion}
-            className="mt-4 bg-purple-600/80 hover:bg-purple-500/70"
-          >
-            Next Question →
-          </Button>
-        )}
-
-        {isRecording && (
+        {isRecording && !isPaused && (
           <p className="text-sm text-gray-500 mt-2">
             {isLastQuestion
               ? "Click 'Stop Session' when you're done to get your feedback"
-              : "Click 'Next Question' when you're ready to continue"}
+              : "Click 'Done' when you're finished with this question"}
           </p>
         )}
       </div>

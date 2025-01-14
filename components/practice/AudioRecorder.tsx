@@ -10,22 +10,29 @@ import Timer from "./Timer";
 interface AudioRecorderProps {
   onRecordingComplete: (audioUrl: string) => void;
   onRecordingStart: () => void;
+  onRecordingPause: () => void;
+  onRecordingResume: () => void;
   maxDuration?: number;
   isDisabled?: boolean;
   isLastQuestion: boolean;
+  isPaused: boolean;
 }
 
 export default function AudioRecorder({
   onRecordingComplete,
   onRecordingStart,
+  onRecordingPause,
+  onRecordingResume,
   maxDuration = 60,
   isDisabled,
   isLastQuestion,
+  isPaused,
 }: AudioRecorderProps) {
   const [isRecording, setIsRecording] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
+  const streamRef = useRef<MediaStream | null>(null);
   const { toast } = useToast();
 
   const { startUpload } = useUploadThing("audioUploader");
@@ -62,6 +69,7 @@ export default function AudioRecorder({
   const startSession = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      streamRef.current = stream;
       mediaRecorderRef.current = new MediaRecorder(stream);
       chunksRef.current = [];
 
@@ -84,10 +92,29 @@ export default function AudioRecorder({
     }
   };
 
+  const pauseRecording = () => {
+    if (mediaRecorderRef.current && isRecording) {
+      mediaRecorderRef.current.pause();
+      onRecordingPause();
+    }
+  };
+
+  const resumeRecording = () => {
+    if (mediaRecorderRef.current && isPaused) {
+      mediaRecorderRef.current.resume();
+      onRecordingResume();
+    }
+  };
+
   const stopSession = () => {
     if (mediaRecorderRef.current && isRecording) {
       mediaRecorderRef.current.stop();
       setIsRecording(false);
+
+      // Clean up stream tracks
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach((track) => track.stop());
+      }
 
       mediaRecorderRef.current.onstop = () => {
         const audioBlob = new Blob(chunksRef.current, { type: "audio/webm" });
@@ -99,7 +126,7 @@ export default function AudioRecorder({
   return (
     <div className="space-y-4">
       <div className="flex justify-center gap-2">
-        {!isRecording ? (
+        {!isRecording && !isPaused ? (
           <Button
             onClick={startSession}
             disabled={isProcessing || isDisabled}
@@ -111,20 +138,36 @@ export default function AudioRecorder({
             ) : (
               <MicIcon className="w-4 h-4" />
             )}
-            {isProcessing ? "Processing..." : "Start Session"}
+            Start Recording
+          </Button>
+        ) : isPaused ? (
+          <Button
+            onClick={resumeRecording}
+            size="lg"
+            className="gap-2 rounded-2xl bg-purple-700/70 hover:bg-purple-600/60 shadow-lg"
+          >
+            <MicIcon className="w-4 h-4" />
+            {/* This actaully resumes' but we palyed a trick  */}
+            Start Recording
+          </Button>
+        ) : isLastQuestion ? (
+          <Button
+            onClick={stopSession}
+            variant="destructive"
+            size="lg"
+            className="gap-2 rounded-2xl shadow-sm border border-purple-500/10"
+          >
+            <SquareIcon className="w-4 h-4" />
+            Stop Session
           </Button>
         ) : (
-          isLastQuestion && (
-            <Button
-              onClick={stopSession}
-              variant="destructive"
-              size="lg"
-              className="gap-2 rounded-2xl shadow-sm border border-purple-500/10"
-            >
-              <SquareIcon className="w-4 h-4" />
-              Stop Session
-            </Button>
-          )
+          <Button
+            onClick={pauseRecording}
+            size="lg"
+            className="gap-2 rounded-2xl bg-blue-600/70 hover:bg-blue-500/60 shadow-lg"
+          >
+            Done
+          </Button>
         )}
       </div>
     </div>
