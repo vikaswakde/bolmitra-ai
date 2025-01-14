@@ -81,8 +81,6 @@ export async function createCustomCategory(data: CreateCategoryInput) {
   }
 }
 
-// ... existing code ...
-
 export async function deleteCategory(categoryId: string) {
   try {
     const headersList = await headers();
