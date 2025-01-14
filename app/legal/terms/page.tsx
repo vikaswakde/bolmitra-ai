@@ -31,12 +31,9 @@ export default function TermsPage() {
             </p>
             <h2 className="text-2xl text-white mt-6">2. Subscription Terms</h2>
             <p className="text-gray-300">
-              - Free tier:[$0/month] Limited category and questions slection.
-              <br />- Pro subscription: [$10/month] : with more categories to
-              choose and detailed analysis reports.
+              - Free tier: [$0/month] or [₹0/month] - Limited category and questions selection.
+              <br />- Pro subscription: [$10/month] or [₹800/month]* - More categories to choose from and detailed analysis reports.
             </p>{" "}
-          </div>
-        </div>
       </div>
     </>
   );
