@@ -50,7 +50,7 @@ const FeedbackListPage = async () => {
               key={feedback.id}
               className="bg-gradient-to-r from-blue-500/80 to-purple-600/90 rounded-lg shadow-lg p-6 transition-transform transform hover:scale-105"
             >
-              <h2 className="text-xl font-semibold text-white">
+              <h2 className="text-xl font-semibold text-white line-clamp-3">
                 {feedback.question_text}
               </h2>
               <p className="text-gray-200">

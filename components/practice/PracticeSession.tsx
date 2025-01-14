@@ -163,7 +163,7 @@ const PracticeSession = ({
         </div>
       )}
       <div className="mb-8 border-dotted decoration-dotted border-2 rounded-2xl px-4 py-5 border-purple-500/80 shadow-lg relative">
-        {isRecording && !isPaused && (
+        {isRecording && !isPaused && !isProcessing && (
           <div className="absolute -top-3 -right-2 backdrop-blur-xl bg-white/50 dark:bg-black/90 rounded-full px-4 py-1.5 shadow-lg flex items-center gap-2 transition-all duration-300 animate-in fade-in slide-in-from-top-2">
             <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
             <span className="text-red-500 font-medium text-sm">Recording</span>

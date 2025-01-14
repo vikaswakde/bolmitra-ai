@@ -2,13 +2,13 @@
 
 import { createCustomCategory } from "@/actions/category-actions";
 import {
-    Form,
-    FormControl,
-    FormDescription,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -22,11 +22,11 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Button } from "../ui/button";
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "../ui/select";
 
 const formSchema = z.object({
@@ -86,13 +86,22 @@ export function CreateCategoryForm({
       }
 
       form.reset();
-      router.push("/dashboard");
-      onSuccess?.();
+      router.refresh();
+      toast({
+        title:
+          mode === "regenerate"
+            ? "Questions regenerated successfully!"
+            : "Category created successfully!",
+        description: "Your questions are ready.",
+      });
+      if (onSuccess) {
+        onSuccess();
+      }
     } catch (error) {
       console.error("Error creating category:", error);
-      // You might want to add toast notification here
       toast({
         title: "Error creating category 😓",
+        variant: "destructive",
       });
     } finally {
       setIsLoading(false);
