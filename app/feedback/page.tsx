@@ -38,7 +38,7 @@ const FeedbackListPage = async () => {
 
   return (
     <div className="container max-w-6xl py-8 mx-auto mt-4 md:mt-8">
-      <h1 className="text-4xl font-bold text-center text-gradient mb-6">
+      <h1 className="text-4xl font-bold text-center text-gradient mb-12">
         Your Feedback
       </h1>
       {feedbacks.length === 0 ? (
@@ -48,19 +48,26 @@ const FeedbackListPage = async () => {
           {feedbacks.map((feedback) => (
             <div
               key={feedback.id}
-              className="bg-gradient-to-r from-blue-500/80 to-purple-600/90 rounded-lg shadow-lg p-6 transition-transform transform hover:scale-105"
+              className="shadow-inner p-6 transform hover:scale-105 border border-gray-200 rounded-2xl hover:border-purple-200 transition-all space-y-5 group
+"
             >
-              <h2 className="text-xl font-semibold text-white line-clamp-3">
+              <h2 className="text-lg font-semibold line-clamp-2 md:line-clamp-3">
                 {feedback.question_text}
               </h2>
-              <p className="text-gray-200">
-                Category: {feedback.category_name}
-              </p>
-              <p className="text-gray-300">Score: {feedback.overall_score}</p>
+              <div className="space-y-2">
+                <p className="text-gray-500">
+                  Category: {feedback.category_name}
+                </p>
+                <p className="text-gray-700">Score: {feedback.overall_score}</p>
+              </div>
               <Link href={`/feedback/${feedback.id}`}>
                 <Button
                   variant="outline"
-                  className="mt-4 bg-white text-blue-500 hover:bg-blue-100 transition-colors duration-200"
+                  className="mt-4 bg-white text-blue-400 hover:bg-blue-100 
+                  hover:text-blue-800 transition-colors
+                  font-semibold
+                  duration-200
+                  border-gray-200 rounded-2xl shadow-inner group-hover:bg-white/10"
                 >
                   View Feedback
                 </Button>

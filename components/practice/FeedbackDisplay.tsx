@@ -1,5 +1,7 @@
 "use client";
 
+import { QuestionFeedback } from "../feedback/QuestionFeedback";
+
 interface FeedbackDisplayProps {
   feedback: {
     id: string;
@@ -144,35 +146,7 @@ export default function FeedbackDisplay({ feedback }: FeedbackDisplayProps) {
         <h4 className="text-xl font-semibold text-purple-700 mb-4">
           Question-by-Question Analysis
         </h4>
-        <div className="space-y-6">
-          {Object.entries(feedback.questionFeedback || {}).map(
-            ([question, qFeedbacks], i) => (
-              <div key={i} className="bg-white p-4 rounded-lg shadow-sm">
-                <div className="flex justify-between items-center mb-2">
-                  <h5 className="font-semibold text-purple-800">{question}</h5>
-                  <span className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm">
-                    Score: {qFeedbacks[0]?.score || 0}%
-                  </span>
-                </div>
-                {qFeedbacks.map((qFeedback, j) => (
-                  <div key={j}>
-                    <p className="text-gray-600 text-sm mb-2">
-                      Time: {qFeedback.timestamp || "N/A"}
-                    </p>
-                    <p className="text-gray-700 mb-3">
-                      {qFeedback.feedback || "No feedback provided."}
-                    </p>
-                    <div className="bg-green-50 p-3 rounded-md">
-                      <p className="text-sm font-medium text-green-800">
-                        Improved Version: {qFeedback.improvedVersion || "N/A"}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )
-          )}
-        </div>
+        <QuestionFeedback questionFeedback={feedback.questionFeedback || {}} />
       </div>
     </div>
   );

@@ -124,7 +124,9 @@ export async function PromptUploadedFile(
             "timestamp": "<start-end>",
             "score": <number between 1-100>,
             "feedback": "<specific feedback for this answer>",
-            "improvedVersion": "<a short and to the point improved version>"
+            "improvedVersion": "<a short and to the point improved version>",
+            "keyStrength": "<specific strength related to the question>",
+            "focusArea": "<area that needs improvement>"
           }
         ]
       }

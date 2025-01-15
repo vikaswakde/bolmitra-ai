@@ -2,6 +2,7 @@ import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import { Button } from "../ui/button";
 
 const NavLink = ({
   href,
@@ -22,7 +23,7 @@ const NavLink = ({
 
 const Header = () => {
   return (
-    <nav className="container flex items-center justify-between px-8 py-4 mx-auto base">
+    <nav className="container flex items-center justify-between px-8 py-4 mx-auto base ">
       <div className="flex lg:flex-1">
         <NavLink href="/">
           <span className="flex items-center gap-2 shrink-0 pt-1">
@@ -40,9 +41,21 @@ const Header = () => {
         </NavLink>
       </div>
       <div className="flex lg:justify-center  gap-4 lg:gap-12 lg:items-center">
-        <NavLink href="/#pricing">Pricing</NavLink>
+        <Button
+          variant="outline"
+          className="border rounded-2xl border-gray-200 shadow-inner"
+        >
+          <NavLink href="/#pricing">Pricing</NavLink>
+        </Button>
         <span className="border"></span>
-        <NavLink href="/feedback">Feedback 4u</NavLink>
+        <NavLink href="/feedback">
+          <Button
+            variant="outline"
+            className="border-gray-200 shadow-inner rounded-2xl"
+          >
+            Feedback 4u
+          </Button>
+        </NavLink>
       </div>
       <div className="flex lg:justify-end lg:flex-1 gap-2">
         <SignedIn>
