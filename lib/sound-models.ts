@@ -1,19 +1,19 @@
-export interface SoundModel {
-  name: string;
-  url: string;
-}
+export const SOUND_MODELS = [
+  {
+    name: "Facebook MMS - English",
+    url: "https://api-inference.huggingface.co/models/facebook/mms-tts-eng",
+    type: "huggingface",
+  },
+  {
+    name: "MeloTTS - English (US)",
+    url: "mrfakename/MeloTTS",
+    type: "gradio",
+    defaultSpeaker: "EN-US",
+    defaultLanguage: "EN",
+    modelPath: "/synthesize",
+    requiresAuth: true,
+  },
+  // ...add more models as needed
+] as const;
 
-export const SOUND_MODELS: SoundModel[] = [
-  {
-    name: "Model 1",
-    url: "https://api-inference.huggingface.co/models/espnet/kan-bayashi_ljspeech_vits",
-  },
-  {
-    name: "Model 2",
-    url: "https://api-inference.huggingface.co/models/facebook/fastspeech2-en-ljspeech",
-  },
-  {
-    name: "Model 3",
-    url: "https://api-inference.huggingface.co/models/hexgrad/Kokoro-82M",
-  },
-];
+export type SoundModel = (typeof SOUND_MODELS)[number];

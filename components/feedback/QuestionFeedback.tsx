@@ -10,7 +10,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { SOUND_MODELS } from "@/lib/sound-models";
+import { SOUND_MODELS, SoundModel } from "@/lib/sound-models";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { MessageSquare, Volume2, VolumeX } from "lucide-react";
@@ -37,7 +37,9 @@ export function QuestionFeedback({ questionFeedback }: QuestionFeedbackProps) {
   const [audioElement, setAudioElement] = useState<HTMLAudioElement | null>(
     null
   );
-  const [selectedModel, setSelectedModel] = useState(SOUND_MODELS[0].url);
+  const [selectedModel, setSelectedModel] = useState<SoundModel>(
+    SOUND_MODELS[0]
+  );
 
   useEffect(() => {
     // Initialize audio element
@@ -78,42 +80,54 @@ export function QuestionFeedback({ questionFeedback }: QuestionFeedbackProps) {
 
     try {
       setIsLoading((prev) => ({ ...prev, [questionId]: true }));
-      toast({
-        title: "Generating audio...",
-      });
+      console.log(
+        "Frontend: Starting audio generation for model:",
+        selectedModel
+      );
 
-      console.log("Sending request for text:", text);
+      const requestBody =
+        selectedModel.type === "huggingface"
+          ? {
+              type: "huggingface",
+              improvedText: text,
+              modelUrl: selectedModel.url,
+            }
+          : {
+              type: "gradio",
+              text: text,
+              language: selectedModel.defaultLanguage,
+              speaker: selectedModel.defaultSpeaker,
+            };
+
+      console.log("Frontend: Sending request with body:", requestBody);
+
       const response = await fetch("/api/generate-audio", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          improvedText: text,
-          modelUrl: selectedModel,
-        }),
+        body: JSON.stringify(requestBody),
       });
 
-      console.log("Response status:", response.status);
+      console.log("Frontend: Response status:", response.status);
 
       if (!response.ok) {
-        const errorText = await response.text();
-        console.error("API Error:", errorText);
-        // throw new Error(`Failed to fetch audio data: ${errorText}`);
-        toast({
-          title: "Failed to fetch audio, try different model",
-          variant: "destructive",
-        });
+        const errorData = await response.json();
+        console.error("Frontend: API Error:", errorData);
+        throw new Error(errorData.error || "Failed to generate audio");
       }
 
       const audioData = await response.arrayBuffer();
-      console.log("Received audio data size:", audioData.byteLength);
+      console.log("Frontend: Received audio data size:", audioData.byteLength);
 
       if (audioData.byteLength === 0) {
         throw new Error("Received empty audio data");
       }
 
-      const blob = new Blob([audioData], { type: "audio/mpeg" });
+      // Use the correct MIME type based on the model type
+      const mimeType =
+        selectedModel.type === "huggingface" ? "audio/mpeg" : "audio/wav";
+      const blob = new Blob([audioData], { type: mimeType });
       const newAudioUrl = URL.createObjectURL(blob);
 
       if (audioUrl) {
@@ -124,25 +138,16 @@ export function QuestionFeedback({ questionFeedback }: QuestionFeedbackProps) {
 
       if (audioElement) {
         audioElement.src = newAudioUrl;
-        const playPromise = audioElement.play();
-        if (playPromise) {
-          playPromise
-            .then(() => {
-              setSpeaking(questionId);
-              toast({
-                title: "Playing audio",
-              });
-            })
-            .catch((error) => {
-              console.error("Playback error:", error);
-              toast({
-                title: "Faield to paly audio",
-              });
-            });
-        }
+        await audioElement.play();
+        setSpeaking(questionId);
+        toast({ title: "Playing audio" });
       }
     } catch (error) {
-      console.error("Error generating audio:", error);
+      console.error("Frontend: Error in generateAndPlayAudio:", error);
+      toast({
+        title: `Audio generation failed: ${(error as Error).message}`,
+        variant: "destructive",
+      });
     } finally {
       setIsLoading((prev) => ({ ...prev, [questionId]: false }));
     }
@@ -155,7 +160,12 @@ export function QuestionFeedback({ questionFeedback }: QuestionFeedbackProps) {
         <div className="flex flex-col sm:flex-col justify-center items-start sm:items-end gap-4">
           <h4 className="text-xl font-medium text-black/70">Voice Model</h4>
           <div className="w-full sm:w-64">
-            <Select value={selectedModel} onValueChange={setSelectedModel}>
+            <Select
+              value={selectedModel.url}
+              onValueChange={(url) =>
+                setSelectedModel(SOUND_MODELS.find((m) => m.url === url)!)
+              }
+            >
               <SelectTrigger className="bg-white/90 hover:bg-gray-100 border-purple-200">
                 <SelectValue placeholder="Select voice model" />
               </SelectTrigger>
@@ -264,7 +274,7 @@ export function QuestionFeedback({ questionFeedback }: QuestionFeedbackProps) {
                                     Generating with{" "}
                                     {
                                       SOUND_MODELS.find(
-                                        (m) => m.url === selectedModel
+                                        (m) => m.url === selectedModel.url
                                       )?.name
                                     }
                                     ...
