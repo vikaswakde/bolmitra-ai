@@ -163,9 +163,11 @@ export default function AudioRecorder({
         ) : (
           <Button
             onClick={pauseRecording}
+            variant="destructive"
             size="lg"
-            className="gap-2 rounded-2xl bg-blue-600/70 hover:bg-blue-500/60 shadow-lg"
+            className="gap-2 rounded-2xl shadow-sm border border-purple-500/10"
           >
+            <SquareIcon className="w-4 h-4" />
             Done
           </Button>
         )}
