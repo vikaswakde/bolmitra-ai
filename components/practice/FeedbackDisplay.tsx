@@ -95,8 +95,8 @@ export default function FeedbackDisplay({ feedback }: FeedbackDisplayProps) {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
               className={cn(
-                "backdrop-blur-sm p-6 rounded-2xl shadow-inner border border-purple-100 hover:shadow-md transition-shadow duration-300 bg-red-100 text-red-500/90",
-                (value > 50 || 0) && "bg-green-100 text-green-400"
+                "backdrop-blur-sm p-6 rounded-2xl shadow-inner border border-purple-100 hover:shadow-md transition-shadow duration-300  text-red-500/90",
+                (value > 50 || 0) && " text-green-400"
               )}
             >
               <h4 className="text-sm font-medium text-purple-600/90 capitalize mb-2">

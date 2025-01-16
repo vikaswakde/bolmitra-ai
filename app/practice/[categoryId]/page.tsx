@@ -25,7 +25,7 @@ const PracticePage = async (props: {
   const limitedQuestions =
     userPlan === "free" ? questions.slice(0, 3) : questions;
   return (
-    <div className="absolute top-[40%] left-1/2 -translate-x-1/2 -translate-y-1/2">
+    <div className="flex items-center justify-center mt-[3rem]">
       <PracticeSession
         questions={limitedQuestions as Question[]}
         categoryId={categoryId}
