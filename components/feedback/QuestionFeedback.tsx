@@ -182,7 +182,7 @@ export function QuestionFeedback({ questionFeedback }: QuestionFeedbackProps) {
       </div>
 
       {/* Questions Grid */}
-      <div className="grid gap-8 md:grid-cols-1 lg:grid-cols-2">
+      <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-2 pt-6">
         {Object.entries(questionFeedback).map(
           ([question, feedbacks], qIndex) => (
             <motion.div
@@ -191,8 +191,8 @@ export function QuestionFeedback({ questionFeedback }: QuestionFeedbackProps) {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: qIndex * 0.1 }}
             >
-              <Card className="p-6 rounded-2xl shadow-inner bg-white/90 backdrop-blur-sm border border-l my-4 ">
-                <div className="space-y-6 border-b rounded-2xl">
+              <Card className="h-full p-6 rounded-2xl shadow-inner bg-white/90 backdrop-blur-sm border border-l">
+                <div className="space-y-6 border-b rounded-2xl flex flex-col">
                   <h4 className="text-xl font-medium text-purple-800">
                     {question}
                   </h4>
