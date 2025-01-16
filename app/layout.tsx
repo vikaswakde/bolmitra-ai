@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   description:
     "Transform raw audio into personalized intelligence and actionable feedback with BolMita AI.",
   icons: {
-    icon: "/bolMita.png",
+    icon: "/bolMitra.png",
   },
 };
 
