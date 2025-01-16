@@ -11,14 +11,16 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 import { CreateCategoryForm } from "./CreateCategoryForm";
+import { useState } from "react";
 
 interface CreateCategoryButtonProps {
   userPlan: string;
 }
 
 export function CreateCategoryButton({ userPlan }: CreateCategoryButtonProps) {
+  const [isOpen, setIsOpen] = useState(false);
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild className="rounded-2xl border-gray-200 shadow-sm">
         <Button
           variant="outline"
@@ -41,7 +43,7 @@ export function CreateCategoryButton({ userPlan }: CreateCategoryButtonProps) {
             Create a personalized category with AI-generated practice questions.
           </DialogDescription>
         </DialogHeader>
-        <CreateCategoryForm />
+        <CreateCategoryForm onSuccess={() => setIsOpen(false)} />
       </DialogContent>
     </Dialog>
   );

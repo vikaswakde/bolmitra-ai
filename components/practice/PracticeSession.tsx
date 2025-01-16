@@ -153,7 +153,7 @@ const PracticeSession = ({
   const isLastQuestion = currentQuestionIndex === questions.length - 1;
 
   return (
-    <div className="max-w-2xl mx-auto space-y-8">
+    <div className="max-w-2xl md:max-w-3xl mx-auto space-y-8 md:space-y-12">
       {isProcessing && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-2xl shadow-2xl flex items-center gap-4">
@@ -162,7 +162,7 @@ const PracticeSession = ({
           </div>
         </div>
       )}
-      <div className="mb-8 border-dotted decoration-dotted border-2 rounded-2xl px-4 py-5 border-purple-500/80 shadow-lg relative">
+      <div className="mb-8 border decoration-slice rounded-2xl px-6 py-8 border-purple-500/30 shadow-inner relative">
         {isRecording && !isPaused && !isProcessing && (
           <div className="absolute -top-3 -right-2 backdrop-blur-xl bg-white/50 dark:bg-black/90 rounded-full px-4 py-1.5 shadow-lg flex items-center gap-2 transition-all duration-300 animate-in fade-in slide-in-from-top-2">
             <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
@@ -173,7 +173,7 @@ const PracticeSession = ({
         <h2 className="text-2xl font-bold mb-2 text-purple-700/70">
           Question {currentQuestionIndex + 1} of {questions.length}
         </h2>
-        <p className="text-lg text-gray-700 border rounded-2xl px-5 py-3 shadow-md mt-5 border-purple-400/50">
+        <p className="text-lg text-gray-700 border rounded-2xl px-4 py-6 shadow-sm mt-5 border-purple-400/40">
           {currentQuestion?.question_text}
         </p>
       </div>

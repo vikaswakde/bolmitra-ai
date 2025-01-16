@@ -4,7 +4,7 @@ import {
   ArrowRightIcon,
   BookOpenIcon,
   MicIcon,
-  PresentationIcon
+  PresentationIcon,
 } from "lucide-react";
 import Link from "next/link";
 import { CreateCategoryButton } from "./CreateCategoryButton";
@@ -63,6 +63,7 @@ export default function CategoryGrid({
                 Start Practice
                 <ArrowRightIcon className="ml-2 w-4 h-4" />
               </Link>
+
               {/* Only show regenerate option for custom categories */}
               {category.is_custom && (
                 <div>

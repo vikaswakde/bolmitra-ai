@@ -40,7 +40,7 @@ const Header = () => {
           </span>
         </NavLink>
       </div>
-      <div className="flex lg:justify-center  gap-4 lg:gap-12 lg:items-center">
+      <div className="hidden md:flex lg:justify-center  gap-4 lg:gap-12 lg:items-center">
         <Button
           variant="outline"
           className="border rounded-2xl border-gray-200 shadow-inner"
@@ -60,7 +60,9 @@ const Header = () => {
       <div className="flex lg:justify-end lg:flex-1 gap-2">
         <SignedIn>
           <div className="flex gap-4 items-center">
-            <NavLink href="/dashboard">Start Practice</NavLink>
+            <Button variant="outline" className="rounded-2xl shadow-inner">
+              <NavLink href="/dashboard">Start Practice</NavLink>
+            </Button>
             {/* Profile */}
             <UserButton />
           </div>

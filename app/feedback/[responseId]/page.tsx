@@ -34,42 +34,57 @@ const FeedbackPage = async (props: {
   }
 
   return (
-    <div className="container max-w-4xl py-8 space-y-8 mx-auto mt-4 md:mt-8">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-purple-700">Your Feedback</h1>
-          <p className="text-gray-600">Category: {response.category_name}</p>
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-white">
+      <div className="container py-8 mx-auto px-4 lg:px-8">
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h1 className="text-3xl font-bold text-purple-800">
+              Your Interview Feedback
+            </h1>
+            <p className="text-gray-600 mt-2">
+              Category: {response.category_name}
+            </p>
+          </div>
+          <Link href="/dashboard">
+            <Button variant="outline" className="shadow-sm">
+              Back to Dashboard
+            </Button>
+          </Link>
         </div>
-        <Link href="/dashboard">
-          <Button variant="outline">Back to Dashboard</Button>
-        </Link>
-      </div>
-      <div className="bg-white rounded-lg shadow-lg">
-        <FeedbackDisplay
-          feedback={{
-            id: response.id,
-            user_id: response.user_id,
-            question_id: response.question_id,
-            audio_url: response.audio_url,
-            overall_score: response.overall_score,
-            feedback_json: response.feedback_json,
-            metrics: response.metrics,
-            questionFeedback: response.question_feedback,
-            created_at: response.created_at,
-            tokens_used: response.tokens_used,
-            question_text: response.question_text,
-            category_name: response.category_name,
-          }}
-        />
-      </div>
 
-      <div className="flex justify-center gap-4">
-        <Link href={`/practice/${response.category_id}`}>
-          <Button>Practice More</Button>
-        </Link>
-        <Link href="/dashboard">
-          <Button variant="outline">Back to Dashboard</Button>
-        </Link>
+        <div className="grid lg:grid-cols-12 gap-8">
+          <div className="lg:col-span-12">
+            <FeedbackDisplay
+              feedback={{
+                id: response.id,
+                user_id: response.user_id,
+                question_id: response.question_id,
+                audio_url: response.audio_url,
+                overall_score: response.overall_score,
+                feedback_json: response.feedback_json,
+                metrics: response.metrics,
+                questionFeedback: response.question_feedback,
+                created_at: response.created_at,
+                tokens_used: response.tokens_used,
+                question_text: response.question_text,
+                category_name: response.category_name,
+              }}
+            />
+          </div>
+        </div>
+
+        <div className="flex justify-center gap-4 mt-8">
+          <Link href={`/practice/${response.category_id}`}>
+            <Button size="lg" className="shadow-md">
+              Practice More
+            </Button>
+          </Link>
+          <Link href="/dashboard">
+            <Button variant="outline" size="lg" className="shadow-sm">
+              Back to Dashboard
+            </Button>
+          </Link>
+        </div>
       </div>
     </div>
   );
