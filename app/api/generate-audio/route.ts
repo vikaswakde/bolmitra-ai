@@ -97,8 +97,9 @@ async function handleGradioRequest(
     console.log("API: Handling Gradio request");
 
     // Initialize client with auth token
+    const hfToken = process.env.HUGGING_FACE_TOKEN as `hf_${string}`; // Type assertion to match expected type
     const client = await Client.connect("mrfakename/MeloTTS", {
-      hf_token: process.env.HUGGING_FACE_TOKEN,
+      hf_token: hfToken,
     });
 
     const result = await client.predict("/synthesize", [
@@ -110,11 +111,13 @@ async function handleGradioRequest(
 
     console.log("API: Raw result from Gradio:", result);
 
-    if (!result.data?.[0]) {
+    if (
+      !result.data ||
+      !Array.isArray(result.data) ||
+      result.data.length === 0
+    ) {
       throw new Error("No audio data received from Gradio");
     }
-
-    // Get the audio data directly from the result
     const audioData = result.data[0];
 
     // If the response is a blob/file object
