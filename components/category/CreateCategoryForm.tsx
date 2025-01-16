@@ -87,6 +87,11 @@ export function CreateCategoryForm({
 
       form.reset();
       router.refresh();
+
+      if (onSuccess) {
+        onSuccess();
+      }
+
       toast({
         title:
           mode === "regenerate"
@@ -94,11 +99,8 @@ export function CreateCategoryForm({
             : "Category created successfully!",
         description: "Your questions are ready.",
       });
-      if (onSuccess) {
-        onSuccess();
-      }
     } catch (error) {
-      console.error("Error creating category:", error);
+      console.error("CreateCategoryForm: Error:", error);
       toast({
         title: "Error creating category 😓",
         variant: "destructive",

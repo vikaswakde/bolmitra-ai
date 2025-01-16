@@ -10,7 +10,6 @@ export async function POST(req: Request) {
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
-
     // Check if user has pro plan
     // const userPlan = await getUserSubscriptionPlan(
     //   user.emailAddresses[0]?.emailAddress
@@ -18,35 +17,49 @@ export async function POST(req: Request) {
     // if (userPlan !== "pro") {
     //   return new NextResponse("Pro plan required", { status: 403 });
     // }
-
-    const { name, context } = await req.json();
+    const { name, context, categoryId } = await req.json();
 
     const sql = await getDbConnection();
 
-    // Create new category
-    const [category] = await sql`
-      INSERT INTO categories (
-        name,
-        context,
-        is_custom,
-        description
-      ) VALUES (
-        ${name},
-        ${context},
-        ${true},
-        ${context}
-      )
-      RETURNING *
-    `;
+    let category;
+
+    if (categoryId) {
+      console.log("Regenerating questions for category:", categoryId);
+      // Update existing category
+      [category] = await sql`
+        UPDATE categories 
+        SET context = ${context},
+            description = ${context}
+        WHERE id = ${categoryId}
+        RETURNING *
+      `;
+    } else {
+      console.log("Creating new category");
+      // Create new category
+      [category] = await sql`
+        INSERT INTO categories (
+          name,
+          context,
+          is_custom,
+          description
+        ) VALUES (
+          ${name},
+          ${context},
+          ${true},
+          ${context}
+        )
+        RETURNING *
+      `;
+    }
 
     return NextResponse.json({
       success: true,
       data: category,
     });
   } catch (error) {
-    console.error("Error creating category:", error);
+    console.error("Error creating/updating category:", error);
     return NextResponse.json(
-      { success: false, message: "Failed to create category" },
+      { success: false, message: "Failed to create/update category" },
       { status: 500 }
     );
   }

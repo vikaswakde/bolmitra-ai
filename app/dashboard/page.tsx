@@ -42,10 +42,14 @@ export default async function Dashboard() {
   // const isValidBasicPlan = isBasicPlan && posts.length < 3;
 
   const user = await currentUser();
+
   const { data: categories = [] } = await getCategories();
+
+
   const userPlan = await getUserSubscriptionPlan(
     user?.emailAddresses[0]?.emailAddress
   );
+
 
   return (
     <div className="mx-auto max-w-7xl px-6 py-24 sm:py-32 lg:px-8">

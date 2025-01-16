@@ -13,6 +13,7 @@ interface CreateCategoryInput {
 }
 
 export async function createCustomCategory(data: CreateCategoryInput) {
+  console.log("Server Action: createCustomCategory called with:", data);
   try {
     console.log("data we got from form", data);
     // Get the host from headers
