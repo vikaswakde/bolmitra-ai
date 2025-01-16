@@ -154,7 +154,7 @@ const PracticeSession = ({
 
   return (
     <div className="max-w-2xl md:max-w-3xl mx-auto space-y-8 md:space-y-12">
-      {!isProcessing && (
+      {isProcessing && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-2xl shadow-2xl flex items-center gap-4">
             <Loader2Icon className="w-6 h-6 animate-spin text-purple-600/90" />
