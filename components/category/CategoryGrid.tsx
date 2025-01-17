@@ -12,7 +12,6 @@ import { CreateCategoryButton } from "./CreateCategoryButton";
 import { DeleteCategory } from "./DeleteCategory";
 import { RegenerateQuestions } from "./RegenerateQuestions";
 // import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 
 interface CategoryGridProps {
   categories: Category[];
@@ -34,7 +33,6 @@ export default function CategoryGrid({
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {categories.map((category, index) => {
-
         const isLocked = !isPro && index > 0;
         return (
           <div
@@ -70,7 +68,7 @@ export default function CategoryGrid({
 
               {/* Only show regenerate option for custom categories */}
               {category.is_custom && (
-                <div>
+                <div className="flex items-center">
                   <RegenerateQuestions category={category} />
                   <DeleteCategory category={category} />
                 </div>
