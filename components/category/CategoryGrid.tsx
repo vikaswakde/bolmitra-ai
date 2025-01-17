@@ -38,7 +38,7 @@ export default function CategoryGrid({
           <div
             key={category.id}
             className={cn(
-              "relative group rounded-2xl border b border-gray-200  shadow-sm p-6 hover:border-purple-200 transition-all",
+              "relative group rounded-2xl border b border-purple-400 shadow-inner p-6 hover:border-purple-500 hover:shadow-lg transition-all",
               isLocked && "opacity-60"
             )}
           >
@@ -58,7 +58,7 @@ export default function CategoryGrid({
               <Link
                 href={isLocked ? "/#pricing" : `/practice/${category.id}`}
                 className={cn(
-                  "mt-4 inline-flex items-center text-purple-600 hover:text-purple-700 border px-2 py-1  rounded-2xl border-purple-600/40 shadow-lg",
+                  "mt-4 inline-flex items-center text-purple-600 hover:text-purple-800 border px-2 py-1  rounded-2xl border-purple-600/40 shadow-lg",
                   isLocked && "pointer-events-none opacity-50"
                 )}
               >

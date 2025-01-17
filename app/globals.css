@@ -78,7 +78,7 @@ body {
   a {
     @apply hover:cursor-pointer;
   }
-  button {
+  /* button {
     @apply hover:cursor-pointer bg-purple-600 hover:bg-purple-700;
-  }
+  } */
 }

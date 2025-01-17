@@ -48,9 +48,9 @@ export function DeleteCategory({ category }: DeleteCategoryProps) {
         <Button
           variant="outline"
           size="sm"
-          className="absolute top-2 right-2 w-fit items-center rounded-[28px] rounded-tr-[12px]  shadow-sm"
+          className="absolute top-2 right-2 w-fit items-center rounded-[28px] rounded-tr-[12px]   bg-transparent shadow-inner border border-gray-400/50 border-dashed"
         >
-          <Trash2 className="h-4 w-4 text-red-300 " />
+          <Trash2 className="h-4 w-4 text-red-500 " />
         </Button>
       </DialogTrigger>
       <DialogContent>

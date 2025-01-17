@@ -21,7 +21,10 @@ export function CreateCategoryButton({ userPlan }: CreateCategoryButtonProps) {
   const [isOpen, setIsOpen] = useState(false);
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild className="rounded-2xl border-gray-200 shadow-sm">
+      <DialogTrigger
+        asChild
+        className="rounded-2xl border-purple-400 hover:border-purple-500 shadow-inner hover:shadow-lg bg-transparent hover:bg-transparent"
+      >
         <Button
           variant="outline"
           className="h-[200px] w-full"

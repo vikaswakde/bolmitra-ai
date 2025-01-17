@@ -23,7 +23,10 @@ export function RegenerateQuestions({ category }: RegenerateQuestionsProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild className="rounded-2xl">
+      <DialogTrigger
+        asChild
+        className="rounded-2xl bg-gray-200 shadow-lg border border-gray-500/50"
+      >
         <Button variant="outline" size="sm" className="w-full">
           <RefreshCw className="mr-2 h-4 w-4" />
           Questions
