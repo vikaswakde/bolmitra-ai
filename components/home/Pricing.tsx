@@ -41,7 +41,7 @@ const Pricing = () => {
         "Custom practice sessions",
       ],
       id: "pro",
-      paymentLink: "/subscribe",
+      paymentLink: "https://rzp.io/rzp/2bnvZMY",
     },
   ];
 
