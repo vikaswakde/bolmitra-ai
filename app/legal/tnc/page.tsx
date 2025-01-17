@@ -125,6 +125,42 @@ export default function TermsPage() {
             </p>
 
             <h3 className="text-xl text-white mt-6">9. Contact Us</h3>
+
+            <h3 className="text-xl text-white mt-6">9. Contact Us</h3>
+            <div className="bg-gray-800/50 rounded-lg p-6 mt-4">
+              <div className="grid md:grid-cols-2 gap-6">
+                <div>
+                  <h4 className="text-lg font-semibold text-white mb-2">
+                    Support Contact
+                  </h4>
+                  <p className="text-gray-300">
+                    For general inquiries and support:
+                    <br />
+                    Email: vikaswakdepc@gmail.com
+                    <br />
+                    Office Hours: Monday-Friday, 9 AM - 6 PM EST
+                  </p>
+                </div>
+
+                <div>
+                  <h4 className="text-lg font-semibold text-white mb-2">
+                    Operating Address
+                  </h4>
+                  <p className="text-gray-300">
+                    Takali (Ambad),
+                    <br />
+                    Taluka Paithan,
+                    <br />
+                    District Chhatrapati Sambhaji Nagar,
+                    <br />
+                    Maharashtra - 431137
+                    <br />
+                    India
+                  </p>
+                </div>
+              </div>
+            </div>
+
             <p className="text-gray-300">
               jj For general inquiries and support:
               <br />
