@@ -5,12 +5,12 @@ import { RefreshCw } from "lucide-react";
 import { useState } from "react";
 import { Button } from "../ui/button";
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
 } from "../ui/dialog";
 import { CreateCategoryForm } from "./CreateCategoryForm";
 
@@ -26,7 +26,7 @@ export function RegenerateQuestions({ category }: RegenerateQuestionsProps) {
       <DialogTrigger asChild className="rounded-2xl">
         <Button variant="outline" size="sm" className="w-full">
           <RefreshCw className="mr-2 h-4 w-4" />
-          Regenerate Questions
+          Questions
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">

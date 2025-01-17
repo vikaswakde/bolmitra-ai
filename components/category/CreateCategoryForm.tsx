@@ -34,7 +34,7 @@ const formSchema = z.object({
   context: z
     .string()
     .min(20, "Please provide more context for better questions"),
-  questionCount: z.number().min(1).max(20),
+  questionCount: z.number().min(1).max(5),
   difficulty: z.enum(["beginner", "intermediate", "advanced"]),
 });
 
@@ -60,7 +60,7 @@ export function CreateCategoryForm({
     defaultValues: {
       name: category?.name ?? "",
       context: category?.context ?? "",
-      questionCount: 5,
+      questionCount: 2,
       difficulty: "intermediate",
     },
   });
