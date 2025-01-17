@@ -1,117 +1,106 @@
 # BolMita AI - Interactive Audio Analysis Platform
 
-## Core Value Proposition
+BolMita AI is a sophisticated platform that transforms spoken responses into actionable feedback using AI-powered analysis. It helps users improve their communication skills through structured practice sessions and detailed performance insights.
 
-- Transform raw audio into personalized intelligence and actionable feedback
-- Gamified learning experience through structured audio interactions
-- AI-powered detailed analysis of speaking patterns, content quality, and delivery
-- Social sharing capabilities to drive organic growth
+## 🌟 Key Features
 
-## System Architecture
+- **AI-Powered Analysis**: Advanced feedback on speaking patterns, content quality, and delivery
+- **Interactive Practice Sessions**: Structured question sets across multiple categories
+- **Real-time Feedback**: Instant analysis of audio responses with detailed metrics
+- **Progress Tracking**: Comprehensive performance monitoring and improvement suggestions
+- **Multi-tier Access**: Flexible subscription plans for different user needs
 
-### 1. Database Schema Updates
+## 🏗️ Technical Architecture
 
-sql`
--- Categories for different types of interactions
-CREATE TABLE categories (
-id uuid DEFAULT gen_random_uuid() NOT NULL,
-name VARCHAR(100) NOT NULL,
-description TEXT,
-created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-CONSTRAINT categories_pkey PRIMARY KEY (id)
-);
--- Questions bank for different categories
-CREATE TABLE questions (
-id uuid DEFAULT gen_random_uuid() NOT NULL,
-category_id uuid NOT NULL,
-question_text TEXT NOT NULL,
-difficulty_level VARCHAR(20),
-created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-CONSTRAINT questions_pkey PRIMARY KEY (id),
-CONSTRAINT fk_category FOREIGN KEY (category_id) REFERENCES categories(id)
-);
--- User responses/attempts
-CREATE TABLE responses (
-id uuid DEFAULT gen_random_uuid() NOT NULL,
-user_id VARCHAR(255) NOT NULL,
-question_id uuid NOT NULL,
-audio_url TEXT NOT NULL,
-feedback_json JSONB,
-metrics JSONB,
-created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-CONSTRAINT responses_pkey PRIMARY KEY (id),
-CONSTRAINT fk_question FOREIGN KEY (question_id) REFERENCES questions(id)
-);
--- User progress and achievements
-CREATE TABLE user_progress (
-id uuid DEFAULT gen_random_uuid() NOT NULL,
-user_id VARCHAR(255) NOT NULL,
-category_id uuid NOT NULL,
-questions_attempted INTEGER DEFAULT 0,
-avg_score DECIMAL(5,2),
-badges JSONB,
-created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-CONSTRAINT user_progress_pkey PRIMARY KEY (id),
-CONSTRAINT fk_category FOREIGN KEY (category_id) REFERENCES categories(id)
-);`
+### Database Schema
 
-### 2. Implementation Phases
+- Categories for practice sessions
+- Question bank with difficulty levels
+- User responses with detailed feedback
+- Progress tracking and achievements
 
-#### Phase 1: Core Infrastructure
+### Core Technologies
 
-- [x] Update database schema
-- [x] Set up category and question management system
-- [x] Implement audio recording component with 60-second limit
-- [x] Enhance upload system to handle multiple audio files
-- [x] Create creative feedback analysis system using Gemini AI
+- **Frontend**: Next.js 15.1, React 19, TypeScript
+- **UI Components**: Tailwind CSS, Radix UI, Framer Motion
+- **Authentication**: Clerk
+- **AI Integration**: Google Generative AI (Gemini)
+- **Audio Processing**: HuggingFace
+- **Database**: PostgreSQL with Neon
 
-#### Phase 2: User Experience
+## 🚀 Implementation Features
 
-- [ ] Design category selection interface
-- [ ] Create interactive question display system
-- [ ] Implement progress tracking
-- [ ] Design feedback visualization components
-- [ ] Add gamification elements (badges, progress bars, etc.)
+### Phase 1 (Completed)
 
-#### Phase 3: Social Features
+- Database schema implementation
+- Category and question management
+- Audio recording with 60-second limit
+- Multi-file upload system
+- AI feedback analysis using Gemini
 
-- [ ] Design shareable cards for social media
-- [ ] Implement sharing functionality
-- [ ] Create public profile pages
-- [ ] Add social engagement metrics
+### Phase 2 (In Progress)
 
-### 3. Plan Features by Tier
+- Category selection interface
+- Interactive question display
+- Progress tracking system
+- Feedback visualization
+- Gamification elements
 
-#### Free Tier
+### Phase 3 (Planned)
+
+- Social sharing capabilities
+- Public profile system
+- Engagement metrics
+- Community features
+
+## 💎 Subscription Tiers
+
+### Free Tier
 
 - Access to 1 category
 - 3 questions per day
 - Basic feedback analysis
 - Simple progress tracking
 
-#### Pro Tier
+### Pro Tier
 
-- Access to all categories
+- Full category access
 - Unlimited questions
 - Advanced feedback analysis
-- Detailed metrics and insights
+- Detailed metrics
 - Priority processing
-- Social sharing features
+- Social features
 - Custom practice sessions
 
-### 4. Technical Considerations
+## 🛠️ Technical Considerations
 
-- Use WebRTC for audio recording
-- Implement proper audio compression before upload
-- Set up caching for frequently accessed questions
-- Implement rate limiting for free tier users
-- Use websockets for real-time feedback
-- Implement proper error handling for audio processing
+- WebRTC for audio capture
+- Audio compression optimization
+- Question caching system
+- Rate limiting for free tier
+- WebSocket real-time feedback
+- Robust error handling
 
-### 5. Next Steps
+## 🔧 Setup and Installation
 
-1. Begin with database schema migration
-2. Create basic category and question management system
-3. Implement audio recording component
-4. Set up enhanced AI analysis pipeline
-5. Design and implement basic feedback UI
+1. Clone the repository
+2. Install dependencies:
+
+## ENV
+
+```
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
+CLERK_SECRET_KEY=
+UPLOADTHING_SECRET=
+UPLOADTHING_APP_ID=
+GEMINI_API_KEY=
+DATABASE_URL=
+HUGGING_FACE_TOKEN=
+```
+
+## 👥 Contact
+
+For support or inquiries:
+
+- Email: vikaswakdepc@gmail.com
+- Hours: Monday-Friday, 9 AM - 6 PM EST
