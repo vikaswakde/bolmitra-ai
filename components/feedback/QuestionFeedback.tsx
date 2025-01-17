@@ -13,7 +13,15 @@ import { useToast } from "@/hooks/use-toast";
 import { SOUND_MODELS, SoundModel } from "@/lib/sound-models";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
-import { MessageSquare, Volume2, VolumeX } from "lucide-react";
+import {
+  ClockIcon,
+  MessageSquare,
+  StarIcon,
+  TargetIcon,
+  ThumbsUpIcon,
+  Volume2,
+  VolumeX,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 
 interface QuestionFeedbackProps {
@@ -154,12 +162,12 @@ export function QuestionFeedback({ questionFeedback }: QuestionFeedbackProps) {
   };
 
   return (
-    <div className="space-y-[7rem]">
+    <div className="space-y-[4rem] w-fit">
       {/* Voice Model Selector */}
-      <div className="bg-purple-50 p-6 rounded-2xl w-fit absolute top-0 right-0 border border-gray-200 ">
-        <div className="flex flex-col sm:flex-col justify-center items-start sm:items-end gap-4">
+      <div className="bg-purple-50 p-6 rounded-2xl border border-gray-200 shadow-sm mb-6 w-fit absolute top-0 right-0">
+        <div className="flex flex-col justify-center items-start gap-4">
           <h4 className="text-xl font-medium text-black/70">Voice Model</h4>
-          <div className="w-full sm:w-64">
+          <div className="w-full">
             <Select
               value={selectedModel.url}
               onValueChange={(url) =>
@@ -180,9 +188,7 @@ export function QuestionFeedback({ questionFeedback }: QuestionFeedbackProps) {
           </div>
         </div>
       </div>
-
-      {/* Questions Grid */}
-      <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-2 pt-6">
+      <div className="grid grid-cols-1  lg:grid-cols-2 gap-6 px-4 py-4 border-t  ">
         {Object.entries(questionFeedback).map(
           ([question, feedbacks], qIndex) => (
             <motion.div
@@ -190,71 +196,102 @@ export function QuestionFeedback({ questionFeedback }: QuestionFeedbackProps) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: qIndex * 0.1 }}
+              className="relative"
             >
-              <Card className="h-full p-6 rounded-2xl shadow-inner bg-white/90 backdrop-blur-sm border border-l">
-                <div className="space-y-6 border-b rounded-2xl flex flex-col">
+              {/* Question Card */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="bg-white rounded-2xl shadow-md border border-purple-100 p-6 relative overflow-hidden h-full"
+              >
+                {/* Decorative elements */}
+                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-purple-50 to-transparent rounded-bl-full opacity-50" />
+                <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-purple-50 to-transparent rounded-tr-full opacity-30" />
+
+                {/* Question header */}
+                <div className="relative z-10 mb-6 border-b border-purple-100 pb-4">
                   <h4 className="text-xl font-medium text-purple-800">
                     {question}
                   </h4>
+                </div>
 
+                {/* Feedback items */}
+                <div className="space-y-6 relative z-10">
                   {feedbacks.map((feedback, index) => (
                     <motion.div
                       key={index}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: qIndex * 0.1 + index * 0.05 }}
-                      className="space-y-8 border-t border-dashed rounded-2xl"
+                      className="space-y-4"
                     >
-                      <div className="flex justify-between items-center bg-purple-50/50 p-4 rounded-xl border-l border-dashed border-r">
-                        <span className="text-sm text-gray-500">
-                          <span>You took</span>{" "}
-                          <span className="font-semibold px-1">
-                            {feedback.timestamp &&
-                              (() => {
-                                const [start, end] = feedback.timestamp
-                                  .split(" - ")
-                                  .map((t) => parseFloat(t.replace("s", "")));
-                                const durationInSeconds = end - start;
-                                const minutes = Math.floor(
-                                  durationInSeconds / 60
-                                );
-                                const seconds = Math.round(
-                                  durationInSeconds % 60
-                                );
-                                return `${
-                                  minutes > 0 ? `${minutes}m ` : ""
-                                }${seconds}s`;
-                              })()}
-                          </span>{" "}
-                          to answer the question.
-                        </span>
-                        <span
+                      {/* Time and Score Card */}
+                      <div className="flex justify-between items-center bg-gradient-to-r from-purple-50/80 to-purple-50/20 p-4 rounded-xl border border-purple-100">
+                        <div className="flex items-center gap-3">
+                          <div className="bg-white p-2 rounded-lg shadow-sm">
+                            <ClockIcon className="w-5 h-5 text-purple-500" />
+                          </div>
+                          <span className="text-sm text-gray-600">
+                            You took :{" "}
+                            <span className="font-medium text-purple-700">
+                              {feedback.timestamp &&
+                                (() => {
+                                  const [start, end] = feedback.timestamp
+                                    .split("-")
+                                    .map((t) =>
+                                      parseFloat(t.replace("s", "").trim())
+                                    );
+                                  if (isNaN(start) || isNaN(end)) return "0s";
+                                  const durationInSeconds = end - start;
+                                  const minutes = Math.floor(
+                                    durationInSeconds / 60
+                                  );
+                                  const seconds = Math.round(
+                                    durationInSeconds % 60
+                                  );
+                                  return `${
+                                    minutes > 0 ? `${minutes}m ` : ""
+                                  }${seconds}s`;
+                                })()}
+                            </span>
+                          </span>
+                        </div>
+                        <div
                           className={cn(
-                            "font-medium text-lg text-green-500",
-                            (feedback?.score ?? 0) < 50 && "text-red-500"
+                            "px-4 py-2 rounded-lg font-medium text-base",
+                            (feedback?.score || 0) >= 70 &&
+                              "bg-green-100 text-green-700",
+                            (feedback?.score || 0) >= 50 &&
+                              (feedback?.score || 0) < 70 &&
+                              "bg-amber-100 text-amber-700",
+                            (feedback?.score || 0) < 50 &&
+                              "bg-red-100 text-red-700"
                           )}
                         >
-                          {feedback.score}%
-                        </span>
+                          Score: {feedback.score}%
+                        </div>
                       </div>
-                      <div className="bg-white/80  rounded-2xl  px-2 py-2 border-t border-b">
-                        <p className="font-medium text-lg text-purple-600">
-                          Feedback
-                        </p>
-                        <div className="flex items-start gap-3">
-                          <MessageSquare className="w-5 h-5 text-blue-500 mt-1 opacity-80" />
-                          <div>
-                            <p className="text-gray-700 py-3">
-                              {feedback.feedback}
-                            </p>
+
+                      {/* Feedback Content */}
+                      <div className="bg-white rounded-xl border border-purple-100 p-6 space-y-6 hover:shadow-md transition-all duration-300">
+                        {/* Feedback Section */}
+                        <div className="space-y-3">
+                          <div className="flex items-center gap-2 text-purple-700 font-medium">
+                            <MessageSquare className="w-5 h-5" />
+                            <h5>Feedback</h5>
                           </div>
+                          <p className="text-gray-700 pl-7">
+                            {feedback.feedback}
+                          </p>
                         </div>
 
-                        <div className="pt-1 py-2 rounded-2xl mb-2 ">
-                          <div className="flex justify-between items-center mb-4 py-1">
-                            <p className="text-lg font-medium text-purple-700/90">
-                              Improved Version
-                            </p>
+                        {/* Improved Version */}
+                        <div className="space-y-5">
+                          <div className="flex items-center  justify-between">
+                            <div className="flex items-center gap-2 text-green-700 font-medium">
+                              <StarIcon className="w-5 h-5" />
+                              <h5>Improved Version</h5>
+                            </div>
                             <Button
                               variant="outline"
                               size="sm"
@@ -293,34 +330,49 @@ export function QuestionFeedback({ questionFeedback }: QuestionFeedbackProps) {
                               )}
                             </Button>
                           </div>
-                          <p className="text-gray-600 py-1 rounded-2xl px-2 ">
-                            {feedback.improvedVersion}
-                          </p>
+                          <div className="relative group">
+                            <div className="absolute inset-0 bg-gradient-to-r from-green-100/20 to-green-50/10 rounded-xl blur opacity-70 group-hover:opacity-100 transition-opacity duration-300" />
+                            <div className="relative bg-white/80 backdrop-blur-sm p-4 rounded-xl border border-green-100">
+                              <p className="text-gray-700">
+                                {feedback.improvedVersion}
+                              </p>
+                            </div>
+                          </div>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-6 pt-4 border-t border-purple-200 py-2 rounded-lg px-2 border-dashed">
-                          <div>
-                            <p className="font-medium text-green-600/90">
-                              Key Strength
-                            </p>
-                            <p className="text-sm text-gray-600 px-2 py-1">
-                              {feedback.keyStrength}
-                            </p>
+                        {/* Key Points */}
+                        <div className="grid grid-cols-2 gap-4 pt-2">
+                          {/* Key Strength */}
+                          <div className="space-y-2">
+                            <div className="flex items-center gap-2 text-blue-700 font-medium">
+                              <ThumbsUpIcon className="w-4 h-4" />
+                              <h5 className="text-sm">Key Strength</h5>
+                            </div>
+                            <div className="bg-blue-50/50 p-3 rounded-lg border border-blue-100">
+                              <p className="text-sm text-gray-700">
+                                {feedback.keyStrength}
+                              </p>
+                            </div>
                           </div>
-                          <div>
-                            <p className="font-medium text-red-600">
-                              Focus Area
-                            </p>
-                            <p className="text-sm text-gray-600 px-2 py-1">
-                              {feedback.focusArea}
-                            </p>
+
+                          {/* Focus Area */}
+                          <div className="space-y-2">
+                            <div className="flex items-center gap-2 text-amber-700 font-medium">
+                              <TargetIcon className="w-4 h-4" />
+                              <h5 className="text-sm">Focus Area</h5>
+                            </div>
+                            <div className="bg-amber-50/50 p-3 rounded-lg border border-amber-100">
+                              <p className="text-sm text-gray-700">
+                                {feedback.focusArea}
+                              </p>
+                            </div>
                           </div>
                         </div>
                       </div>
                     </motion.div>
                   ))}
                 </div>
-              </Card>
+              </motion.div>
             </motion.div>
           )
         )}

@@ -45,11 +45,6 @@ const FeedbackPage = async (props: {
               Category: {response.category_name}
             </p>
           </div>
-          <Link href="/dashboard">
-            <Button variant="outline" className="shadow-sm">
-              Back to Dashboard
-            </Button>
-          </Link>
         </div>
 
         <div className="grid lg:grid-cols-12 gap-8">
@@ -74,14 +69,9 @@ const FeedbackPage = async (props: {
         </div>
 
         <div className="flex justify-center gap-4 mt-8">
-          <Link href={`/practice/${response.category_id}`}>
-            <Button size="lg" className="shadow-md">
-              Practice More
-            </Button>
-          </Link>
           <Link href="/dashboard">
             <Button variant="outline" size="lg" className="shadow-sm">
-              Back to Dashboard
+              Practice More
             </Button>
           </Link>
         </div>
