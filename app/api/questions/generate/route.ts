@@ -33,7 +33,6 @@ Format the response as in a CORRECT JSON FORMAT ARRAY with the following structu
 [{
   "questionText": "The actual question text",
   "difficultyLevel": "${difficulty}",
-  "type": "behavioral|situational",
 }]`;
 
     console.log("this is what our ai got ==>", prompt);
@@ -76,13 +75,22 @@ Format the response as in a CORRECT JSON FORMAT ARRAY with the following structu
         // Continue with database operations
         const sql = await getDbConnection();
 
-        // Delete existing questions
+        // First delete responses
+        await sql`
+          DELETE FROM responses 
+          WHERE question_id IN (
+            SELECT id FROM questions 
+            WHERE category_id = ${categoryId}
+          )
+        `;
+
+        // Then delete existing questions
         await sql`
           DELETE FROM questions 
           WHERE category_id = ${categoryId}
         `;
 
-        // Insert questions one by one
+        // Insert new questions
         const savedQuestions = [];
         for (const q of questions) {
           const [saved] = await sql`
