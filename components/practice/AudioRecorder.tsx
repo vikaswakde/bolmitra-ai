@@ -7,6 +7,11 @@ import { useRef, useState } from "react";
 import { Button } from "../ui/button";
 import Timer from "./Timer";
 
+const START_SOUND = "/sounds/start.mp3";
+const PAUSE_SOUND = "/sounds/stop.mp3";
+const RESUME_SOUND = "/sounds/start.mp3";
+const STOP_SOUND = "/sounds/stop.mp3";
+
 interface AudioRecorderProps {
   onRecordingComplete: (audioUrl: string) => void;
   onRecordingStart: () => void;
@@ -36,6 +41,11 @@ export default function AudioRecorder({
   const { toast } = useToast();
 
   const { startUpload } = useUploadThing("audioUploader");
+
+  const startSoundRef = useRef<HTMLAudioElement | null>(null);
+  const pauseSoundRef = useRef<HTMLAudioElement | null>(null);
+  const resumeSoundRef = useRef<HTMLAudioElement | null>(null);
+  const stopSoundRef = useRef<HTMLAudioElement | null>(null);
 
   const handleUpload = async (audioBlob: Blob) => {
     try {
@@ -68,6 +78,7 @@ export default function AudioRecorder({
 
   const startSession = async () => {
     try {
+      startSoundRef.current?.play();
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       streamRef.current = stream;
       mediaRecorderRef.current = new MediaRecorder(stream);
@@ -94,6 +105,7 @@ export default function AudioRecorder({
 
   const pauseRecording = () => {
     if (mediaRecorderRef.current && isRecording) {
+      pauseSoundRef.current?.play();
       mediaRecorderRef.current.pause();
       onRecordingPause();
     }
@@ -101,6 +113,7 @@ export default function AudioRecorder({
 
   const resumeRecording = () => {
     if (mediaRecorderRef.current && isPaused) {
+      resumeSoundRef.current?.play();
       mediaRecorderRef.current.resume();
       onRecordingResume();
     }
@@ -108,6 +121,7 @@ export default function AudioRecorder({
 
   const stopSession = () => {
     if (mediaRecorderRef.current && isRecording) {
+      stopSoundRef.current?.play();
       mediaRecorderRef.current.stop();
       setIsRecording(false);
 
@@ -125,6 +139,11 @@ export default function AudioRecorder({
 
   return (
     <div className="space-y-4">
+      <audio ref={startSoundRef} src={START_SOUND} preload="auto" />
+      <audio ref={pauseSoundRef} src={PAUSE_SOUND} preload="auto" />
+      <audio ref={resumeSoundRef} src={RESUME_SOUND} preload="auto" />
+      <audio ref={stopSoundRef} src={STOP_SOUND} preload="auto" />
+
       <div className="flex justify-center gap-2">
         {!isRecording && !isPaused ? (
           <Button
