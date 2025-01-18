@@ -24,7 +24,7 @@ const PracticePage = async (props: {
     userPlan === "free" ? questions.slice(0, 3) : questions;
 
   return (
-    <div className="max-h-fit bg-gradient-to-b from-purple-50 to-white mt-[5rem] ">
+    <div className="max-h-fit bg-gradient-to-b from-purple-50 to-white space-y-4">
       {/* Background Elements */}
       <div className="absolute inset-0 -z-10">
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-purple-100 rounded-full blur-3xl opacity-20 -translate-y-1/2 translate-x-1/2" />

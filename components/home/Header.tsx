@@ -46,15 +46,17 @@ const Header = () => {
       <motion.nav
         initial={{ y: -100 }}
         animate={{ y: 0 }}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 ${
+        className={`${
           isHomePage
-            ? isScrolled
-              ? "bg-white/70 backdrop-blur-lg shadow-md rounded-2xl transform-cpu w-fit mx-auto mt-4 animate-width"
-              : "bg-transparent w-full"
-            : "bg-white shadow-sm w-full"
+            ? `fixed top-0 left-0 right-0 z-50 transition-all duration-700 ${
+                isScrolled
+                  ? "bg-white/70 backdrop-blur-lg shadow-md rounded-2xl transform-cpu w-fit mx-auto mt-4 animate-width"
+                  : "bg-transparent w-full "
+              }`
+            : "relative shadow-sm w-full bg-[linear-gradient(#e9d5ff,#e9d9ff)] border-b border-cyan-300"
         }`}
       >
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 ">
           <div className="flex items-center justify-between h-16 md:h-20">
             {/* Logo */}
             <div className="flex lg:flex-1">

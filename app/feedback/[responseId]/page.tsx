@@ -4,12 +4,12 @@ import { redirect } from "next/navigation";
 import FeedbackDisplay from "@/components/practice/FeedbackDisplay";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { ArrowLeft, Calendar, Clock, Folder } from "lucide-react";
 
 const FeedbackPage = async (props: {
   params: Promise<{ responseId: string }>;
 }) => {
   const params = await props.params;
-
   const user = await currentUser();
   if (!user) redirect("/sign-in");
 
@@ -26,52 +26,110 @@ const FeedbackPage = async (props: {
     AND r.user_id = ${user.id}
   `;
 
-  console.log("this is response =>", response);
-  console.log("structre of feedback_json", response.feedback_json);
-
   if (!response) {
     redirect("/dashboard");
   }
 
+  const formattedDate = new Date(response.created_at).toLocaleDateString(
+    "en-US",
+    {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    }
+  );
+
+  const formattedTime = new Date(response.created_at).toLocaleTimeString(
+    "en-US",
+    {
+      hour: "2-digit",
+      minute: "2-digit",
+    }
+  );
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-white">
-      <div className="container py-8 mx-auto px-4 lg:px-8">
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-purple-800">
-              Your Interview Feedback
-            </h1>
-            <p className="text-gray-600 mt-2">
-              Category: {response.category_name}
-            </p>
-          </div>
-        </div>
+      {/* Background Elements */}
+      <div className="absolute inset-0 -z-10">
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-purple-100 rounded-full blur-3xl opacity-20 -translate-y-1/2 translate-x-1/2" />
+        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-indigo-100 rounded-full blur-3xl opacity-20 translate-y-1/2 -translate-x-1/2" />
+      </div>
 
-        <div className="grid lg:grid-cols-12 gap-8">
-          <div className="lg:col-span-12">
-            <FeedbackDisplay
-              feedback={{
-                id: response.id,
-                user_id: response.user_id,
-                question_id: response.question_id,
-                audio_url: response.audio_url,
-                overall_score: response.overall_score,
-                feedback_json: response.feedback_json,
-                metrics: response.metrics,
-                questionFeedback: response.question_feedback,
-                created_at: response.created_at,
-                tokens_used: response.tokens_used,
-                question_text: response.question_text,
-                category_name: response.category_name,
-              }}
-            />
-          </div>
-        </div>
+      <div className="container max-w-6xl py-12 mx-auto px-4">
+        {/* Navigation */}
+        <nav className="mb-8">
+          <Link
+            href="/feedback"
+            className="inline-flex items-center gap-2 text-gray-600 hover:text-purple-600 transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back to Feedback History
+          </Link>
+        </nav>
 
-        <div className="flex justify-center gap-4 mt-8">
-          <Link href="/dashboard">
-            <Button variant="outline" size="lg" className="shadow-sm">
-              Practice More
+        {/* Header Section */}
+        <header className="mb-12">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+            <div className="space-y-2">
+              <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-indigo-600">
+                Interview Feedback
+              </h1>
+              <div className="flex flex-wrap gap-4 text-sm text-gray-600">
+                <div className="flex items-center gap-2">
+                  <Folder className="w-4 h-4" />
+                  {response.category_name}
+                </div>
+                <div className="flex items-center gap-2">
+                  <Calendar className="w-4 h-4" />
+                  {formattedDate}
+                </div>
+                <div className="flex items-center gap-2">
+                  <Clock className="w-4 h-4" />
+                  {formattedTime}
+                </div>
+              </div>
+            </div>
+
+            <div className="flex gap-3">
+              <Link href={`/dashboard`}>
+                <Button
+                  size="lg"
+                  className="bg-gradient-to-r from-purple-600/20 to-indigo-600/50 hover:from-indigo-600 hover:to-purple-600 text-white shadow-md"
+                >
+                  Practice More
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </header>
+
+        {/* Feedback Display */}
+        <FeedbackDisplay
+          feedback={{
+            id: response.id,
+            user_id: response.user_id,
+            question_id: response.question_id,
+            audio_url: response.audio_url,
+            overall_score: response.overall_score,
+            feedback_json: response.feedback_json,
+            metrics: response.metrics,
+            questionFeedback: response.question_feedback,
+            created_at: response.created_at,
+            tokens_used: response.tokens_used,
+            question_text: response.question_text,
+            category_name: response.category_name,
+          }}
+        />
+
+        {/* Footer Actions */}
+        <div className="flex justify-center gap-4 mt-12">
+          <Link href="/feedback">
+            <Button
+              variant="outline"
+              size="lg"
+              className="shadow-sm hover:bg-purple-50 transition-colors"
+            >
+              View All Feedback
             </Button>
           </Link>
         </div>

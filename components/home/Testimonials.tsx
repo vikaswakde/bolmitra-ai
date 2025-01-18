@@ -5,27 +5,27 @@ import Image from "next/image";
 
 const testimonials = [
   {
-    name: "Sarah Johnson",
-    role: "Public Speaking Coach",
-    image: "/testimonials/sarah.jpg", // Add these images to your public folder
+    name: "Soham",
+    role: "8th Grade Student",
+    image: "/testimonials/soham.jpeg",
     content:
-      "BolMitra has revolutionized how I prepare my clients. The AI feedback is incredibly detailed and spot-on.",
+      "Dude, this app is so cool! I used to get super nervous during class presentations, but now I'm like a mini TED Talk speaker! My friends can't believe it's the same shy Soham. Even managed to nail that science project presentation without saying 'umm' a hundred times! 😎",
     rating: 5,
   },
   {
-    name: "Michael Chen",
-    role: "Sales Director",
-    image: "/testimonials/michael.jpg",
+    name: "Bharat",
+    role: "Farmer",
+    image: "/testimonials/bharat.jpeg",
     content:
-      "My team's presentation skills have improved dramatically since we started using BolMitra. The real-time feedback is invaluable.",
+      "Hello, I am farmer. English is new for me but BolMitra helps me learn. Now I can say 'I grow wheat and rice' and 'My farm is beautiful' without fear! My son is proud when I practice. Small steps, but I am happy!",
     rating: 5,
   },
   {
-    name: "Priya Patel",
-    role: "Graduate Student",
-    image: "/testimonials/priya.jpg",
+    name: "Aisha",
+    role: "Aspiring YouTuber",
+    image: "/testimonials/Aisha.jpg",
     content:
-      "Perfect for interview preparation! The detailed analysis helped me identify and improve my communication weaknesses.",
+      "From recording 50 takes for one video to nailing it in 2-3 tries - that's my BolMitra journey! The feedback on my pace and clarity was exactly what I needed. Now my cooking channel is growing, and I'm not just making great biryani, I'm confidently talking about it too!",
     rating: 5,
   },
 ];
@@ -44,7 +44,7 @@ const Testimonials = () => {
           <h2 className="text-4xl font-bold mb-6">
             Loved by{" "}
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-indigo-600">
-              Communication Experts
+              Community
             </span>
           </h2>
           <p className="text-gray-600 text-lg">
