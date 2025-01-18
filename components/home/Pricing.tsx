@@ -4,6 +4,9 @@ import { Check, ArrowRight, Sparkles, Zap, Shield, Clock } from "lucide-react";
 import { Button } from "../ui/button";
 import Link from "next/link";
 import { useState } from "react";
+import { useAuth } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
+import DynamicPayment from "../payment/DynamicPayment";
 
 const features = {
   free: [
@@ -35,9 +38,18 @@ const PricingCard = ({
   features: string[];
   popular?: boolean;
 }) => {
+  const { userId, isSignedIn } = useAuth();
+  const router = useRouter();
   const [showAllFeatures, setShowAllFeatures] = useState(false);
   const displayFeatures = showAllFeatures ? features : features.slice(0, 4);
   const hasMoreFeatures = features.length > 4;
+
+  const handlePricingAction = () => {
+    if (!isSignedIn) {
+      router.push("/sign-in");
+      return;
+    }
+  };
 
   return (
     <motion.div
@@ -108,23 +120,20 @@ const PricingCard = ({
             ? "bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-indigo-600 hover:to-purple-600 text-white"
             : "bg-gray-50 hover:bg-gray-100 text-gray-800"
         } group`}
+        onClick={handlePricingAction}
       >
         {tier === "Free" ? (
-          <Link
-            href="/sign-up"
-            className="flex items-center justify-center gap-2"
-          >
+          <div className="flex items-center justify-center gap-2">
             Get Started
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-          </Link>
+          </div>
+        ) : isSignedIn ? (
+          <DynamicPayment userId={userId!} />
         ) : (
-          <Link
-            href="/api/payment"
-            className="flex items-center justify-center gap-2"
-          >
-            Upgrade Now
+          <div className="flex items-center justify-center gap-2">
+            Sign in to upgrade
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-          </Link>
+          </div>
         )}
       </Button>
     </motion.div>
@@ -132,6 +141,7 @@ const PricingCard = ({
 };
 
 const Pricing = () => {
+  const { isSignedIn } = useAuth();
   const [isUSD, setIsUSD] = useState(true);
 
   return (

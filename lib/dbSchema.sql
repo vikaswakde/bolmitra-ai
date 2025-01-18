@@ -61,14 +61,14 @@ CREATE TABLE user_progress (
 
 CREATE TABLE payments (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
-    amount INTEGER NOT NULL,
-    status VARCHAR(20) NOT NULL,
-    stripe_payment_id VARCHAR(255) NOT NULL,
+    subscription_id uuid REFERENCES subscriptions(id),
+    paddle_transaction_id VARCHAR(255) NOT NULL,
+    amount DECIMAL(10,2) NOT NULL,
+    currency VARCHAR(3) NOT NULL,
+    status VARCHAR(50) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    refunded_at TIMESTAMP,
-    user_email VARCHAR(255),
-    price_id VARCHAR(255),
-    CONSTRAINT payments_pkey PRIMARY KEY (id)
+    CONSTRAINT payments_pkey PRIMARY KEY (id),
+    CONSTRAINT payments_paddle_transaction_id_key UNIQUE (paddle_transaction_id)
 );
 
 CREATE TABLE posts (
@@ -79,3 +79,33 @@ CREATE TABLE posts (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT posts_pkey PRIMARY KEY (id)
 );
+
+CREATE TABLE subscriptions (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    user_id VARCHAR(255) NOT NULL,
+    paddle_subscription_id VARCHAR(255) NOT NULL,
+    paddle_customer_id VARCHAR(255) NOT NULL,
+    plan_type VARCHAR(50) NOT NULL, -- 'free' or 'pro'
+    status VARCHAR(50) NOT NULL, -- 'active', 'cancelled', 'past_due'
+    current_period_start TIMESTAMP,
+    current_period_end TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT subscriptions_pkey PRIMARY KEY (id),
+    CONSTRAINT subscriptions_paddle_subscription_id_key UNIQUE (paddle_subscription_id)
+);
+
+CREATE TABLE pending_transactions (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    user_id VARCHAR(255) NOT NULL,
+    paddle_transaction_id VARCHAR(255) NOT NULL,
+    status VARCHAR(50) NOT NULL, -- 'pending', 'completed', 'failed'
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT pending_transactions_pkey PRIMARY KEY (id),
+    CONSTRAINT pending_transactions_paddle_id_key UNIQUE (paddle_transaction_id)
+);
+
+-- Modify subscriptions table to allow null values initially
+ALTER TABLE subscriptions 
+ALTER COLUMN paddle_subscription_id DROP NOT NULL,
+ALTER COLUMN paddle_customer_id DROP NOT NULL;
