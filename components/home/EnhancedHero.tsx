@@ -7,9 +7,9 @@ import Image from "next/image";
 import { useAuth } from "@clerk/nextjs";
 
 const stats = [
-  { label: "Active Users", value: "10K+", icon: Users },
-  { label: "User Rating", value: "4.9", icon: Star },
-  { label: "Industry Awards", value: "15+", icon: Award },
+  { label: "Active Users", value: "69+", icon: Users },
+  { label: "User Rating", value: "4.2", icon: Star },
+  { label: "Recognitions", value: "7+", icon: Award },
 ];
 
 const EnhancedHero = () => {
@@ -57,14 +57,6 @@ const EnhancedHero = () => {
                   Get Started Free
                   <ArrowRight className="w-5 h-5" />
                 </Link>
-              </Button>
-
-              <Button
-                variant="outline"
-                size="lg"
-                className="rounded-full border-2 hover:bg-purple-50"
-              >
-                Watch Demo
               </Button>
             </div>
 
