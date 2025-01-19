@@ -9,14 +9,16 @@ const FeedbackListPage = async () => {
   const user = await currentUser();
   if (!user) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-white">
-        <div className="text-center space-y-4 p-8 rounded-2xl bg-white shadow-lg">
-          <h2 className="text-2xl font-bold text-gray-800">Sign in Required</h2>
-          <p className="text-gray-600">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-white px-4">
+        <div className="text-center space-y-4 p-4 sm:p-8 rounded-2xl bg-white shadow-lg w-full max-w-md mx-auto">
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-800">
+            Sign in Required
+          </h2>
+          <p className="text-sm sm:text-base text-gray-600">
             Please sign in to view your feedback history.
           </p>
-          <Link href="/sign-in">
-            <Button className="bg-gradient-to-r from-purple-600 to-indigo-600">
+          <Link href="/sign-in" className="block">
+            <Button className="w-full sm:w-auto bg-gradient-to-r from-purple-600 to-indigo-600">
               Sign In
             </Button>
           </Link>

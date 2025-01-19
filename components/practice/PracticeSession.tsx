@@ -1,12 +1,12 @@
 "use client";
 import { useToast } from "@/hooks/use-toast";
 import { Question } from "@/lib/types";
-import { Loader2Icon, MicIcon, AlertCircle, CheckCircle2 } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+import { AlertCircle, CheckCircle2, Loader2Icon, MicIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState, useRef, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import AudioRecorder from "./AudioRecorder";
-import { motion, AnimatePresence } from "framer-motion";
-import { Progress } from "../ui/progress";
+// import { Progress } from "../ui/progress";
 
 export interface QuestionSegment {
   questionId: string;
@@ -34,6 +34,7 @@ const PracticeSession = ({
   const router = useRouter();
   const { toast } = useToast();
   const [isPaused, setIsPaused] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [progress, setProgress] = useState(0);
   const [showTip, setShowTip] = useState(true);
 
@@ -162,32 +163,31 @@ const PracticeSession = ({
   const isLastQuestion = currentQuestionIndex === questions.length - 1;
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8">
-      {/* Processing Overlay */}
+    <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 space-y-6 sm:space-y-8">
       <AnimatePresence>
         {isProcessing && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50"
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
           >
             <motion.div
               initial={{ scale: 0.9 }}
               animate={{ scale: 1 }}
               exit={{ scale: 0.9 }}
-              className="bg-white p-8 rounded-2xl shadow-2xl"
+              className="bg-white p-6 sm:p-8 rounded-2xl shadow-2xl w-full max-w-sm"
             >
               <div className="flex flex-col items-center gap-4">
                 <div className="relative">
                   <div className="absolute inset-0 bg-purple-100 rounded-full animate-ping" />
-                  <Loader2Icon className="w-12 h-12 text-purple-600 animate-spin relative z-10" />
+                  <Loader2Icon className="w-10 h-10 sm:w-12 sm:h-12 text-purple-600 animate-spin relative z-10" />
                 </div>
                 <div className="text-center">
-                  <h3 className="text-xl font-semibold mb-2">
+                  <h3 className="text-lg sm:text-xl font-semibold mb-2">
                     AI Analysis in Progress
                   </h3>
-                  <p className="text-gray-600">
+                  <p className="text-sm sm:text-base text-gray-600">
                     Our AI is carefully analyzing your responses...
                   </p>
                 </div>
@@ -198,68 +198,68 @@ const PracticeSession = ({
       </AnimatePresence>
 
       {/* Progress Bar */}
-      <div className="space-y-2">
-        <div className="flex justify-between text-sm text-gray-600">
+      {/* <div className="space-y-2">
+        <div className="flex justify-between text-xs sm:text-sm text-gray-600">
           <span>Progress</span>
           <span>{Math.round(progress)}%</span>
         </div>
         <Progress value={progress} className="h-2" />
-      </div>
+      </div> */}
 
       {/* Question Card */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="relative bg-white rounded-2xl border border-purple-200 shadow-lg overflow-hidden"
+        className="relative bg-white rounded-xl sm:rounded-2xl border border-purple-200 shadow-lg overflow-hidden"
       >
-        {/* Recording Indicator */}
         <AnimatePresence>
           {isRecording && !isPaused && !isProcessing && (
             <motion.div
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              className="absolute top-4 right-4 bg-red-50 border border-red-200 rounded-full px-4 py-1.5 flex items-center gap-2"
+              className="absolute top-2 sm:top-4 right-2 sm:right-4 bg-red-50 border border-red-200 rounded-full px-3 sm:px-4 py-1 sm:py-1.5 flex items-center gap-2"
             >
-              <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-              <span className="text-red-600 font-medium text-sm">
+              <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-red-500 animate-pulse" />
+              <span className="text-red-600 font-medium text-xs sm:text-sm">
                 Recording
               </span>
             </motion.div>
           )}
         </AnimatePresence>
 
-        <div className="p-8">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="bg-purple-100 p-2 rounded-lg">
-              <MicIcon className="w-5 h-5 text-purple-600" />
+        <div className="p-4 sm:p-8">
+          <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+            <div className="bg-purple-100 p-1.5 sm:p-2 rounded-lg">
+              <MicIcon className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600" />
             </div>
-            <h2 className="text-xl font-semibold text-gray-800">
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-800">
               Question {currentQuestionIndex + 1} of {questions.length}
             </h2>
           </div>
 
-          <p className="text-lg text-gray-700 bg-purple-50/50 rounded-xl p-6 border border-purple-100">
+          <p className="text-base sm:text-lg text-gray-700 bg-purple-50/50 rounded-lg sm:rounded-xl p-4 sm:p-6 border border-purple-100">
             {currentQuestion?.question_text}
           </p>
         </div>
       </motion.div>
 
-      {/* Tips Card */}
       <AnimatePresence>
         {showTip && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="bg-blue-50 rounded-xl p-6 border border-blue-200"
+            className="bg-blue-50 rounded-lg sm:rounded-xl p-4 sm:p-6 border border-blue-200"
           >
-            <div className="flex items-start gap-4">
-              <AlertCircle className="w-6 h-6 text-blue-500 flex-shrink-0 mt-1" />
+            <div className="flex items-start gap-3 sm:gap-4">
+              <AlertCircle className="w-5 h-5 sm:w-6 sm:h-6 text-blue-500 flex-shrink-0 mt-1" />
               <div>
-                <h3 className="font-semibold text-blue-700 mb-2">Quick Tips</h3>
-                <ul className="text-blue-600 space-y-2 text-sm">
+                <h3 className="font-semibold text-blue-700 mb-2 text-sm sm:text-base">
+                  Quick Tips
+                </h3>
+                <ul className="text-blue-600 space-y-1.5 sm:space-y-2 text-xs sm:text-sm">
                   <li>• Speak clearly and at a natural pace</li>
                   <li>
                     • Take a moment to gather your thoughts before starting
@@ -270,7 +270,7 @@ const PracticeSession = ({
               </div>
               <button
                 onClick={() => setShowTip(false)}
-                className="text-blue-500 hover:text-blue-600"
+                className="text-blue-500 hover:text-blue-600 text-lg sm:text-xl"
               >
                 ×
               </button>
@@ -279,8 +279,7 @@ const PracticeSession = ({
         )}
       </AnimatePresence>
 
-      {/* Audio Recorder */}
-      <div className="flex flex-col items-center gap-6">
+      <div className="flex flex-col items-center gap-4 sm:gap-6">
         <AudioRecorder
           onRecordingComplete={handleRecordingComplete}
           onRecordingStart={handleRecordingStart}
@@ -292,24 +291,24 @@ const PracticeSession = ({
           isPaused={isPaused}
         />
 
-        {/* Status Messages */}
         <AnimatePresence>
           {isRecording && !isPaused && (
             <motion.p
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 10 }}
-              className="text-sm text-gray-600 flex items-center gap-2"
+              className="text-xs sm:text-sm text-gray-600 flex items-center gap-1.5 sm:gap-2 text-center px-4"
             >
               {isLastQuestion ? (
                 <>
-                  <CheckCircle2 className="w-4 h-4 text-green-500" />
+                  <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-green-500 flex-shrink-0" />
                   Click &apos;Stop Session&apos; when you&apos;re done
                 </>
               ) : (
                 <>
-                  <CheckCircle2 className="w-4 h-4 text-purple-500" />
-                  Click &apos;Done when you&apos;re finished with this question
+                  <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-purple-500 flex-shrink-0" />
+                  Click &apos;Done&apos; when you&apos;re finished with this
+                  question
                 </>
               )}
             </motion.p>
@@ -320,7 +319,7 @@ const PracticeSession = ({
       {/* Plan Info */}
       {!isPro && (
         <div className="text-center">
-          <p className="inline-block bg-purple-50 text-purple-700 px-4 py-2 rounded-full text-sm border border-purple-200">
+          <p className="inline-block bg-purple-50 text-purple-700 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm border border-purple-200">
             Free Plan: {questions.length - currentQuestionIndex} questions
             remaining today
           </p>

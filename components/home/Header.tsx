@@ -1,7 +1,7 @@
 "use client";
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 import { AnimatePresence, motion } from "framer-motion";
-import { Crown, Menu, MessageSquare, X } from "lucide-react";
+import { ArrowRight, Crown, Menu, MessageSquare, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -228,12 +228,12 @@ const Header = ({ isPro }: { isPro: boolean }) => {
             className="fixed inset-x-0 top-16 z-40 md:hidden"
           >
             <div className="bg-white/80 backdrop-blur-lg border-b border-gray-200 shadow-lg">
-              <div className="container mx-auto px-4 py-4">
-                <div className="flex flex-col gap-4">
+              <div className="container mx-auto px-4 py-4 ">
+                <div className="flex flex-col gap-4 items-start">
                   {/* Add Subscription Status for Mobile */}
                   <SignedIn>
                     <div
-                      className={`px-3 py-2 rounded-full text-sm font-medium flex items-center justify-center gap-2 ${
+                      className={`px-3 py-2 rounded-full text-sm font-medium flex items-center justify-start w-fit gap-2 ${
                         isPro
                           ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white"
                           : "bg-gray-100 text-gray-600"
@@ -242,48 +242,55 @@ const Header = ({ isPro }: { isPro: boolean }) => {
                       <Crown className="w-4 h-4" />
                       {isPro ? "Pro Plan" : "Free Plan"}
                     </div>
+                    {isPro && (
+                      <NavLink
+                        href="/settings/billing"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        <div
+                          className={`px-2 py-2 rounded-full text-sm font-medium flex border items-center justify-start  gap-2 ${
+                            isPro
+                              ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white"
+                              : "bg-gray-100 text-gray-600"
+                          }`}
+                        >
+                          <Crown className="w-4 h-4" />
+                          Manage
+                        </div>
+                      </NavLink>
+                    )}
+                  </SignedIn>
 
+                  <NavLink
+                    href="/feedback"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    <div
+                      className={`px-2 py-2 rounded-full text-sm font-medium flex border items-center justify-start bg-purple-300  gap-2 ${
+                        isPro
+                          ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white"
+                          : "bg-gray-100 text-gray-600"
+                      }`}
+                    >
+                      Feedback
+                      <MessageSquare className="w-4 h-4" />
+                    </div>
+                  </NavLink>
+                  <SignedIn>
                     <NavLink
-                      href="/settings/billing"
+                      href="/dashboard"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       <div
-                        className={`px-3 py-2 rounded-full text-sm font-medium flex items-center justify-center gap-2 ${
+                        className={`px-2 py-2 rounded-full text-sm font-medium flex border items-center justify-start bg-purple-300  gap-2 ${
                           isPro
                             ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white"
                             : "bg-gray-100 text-gray-600"
                         }`}
                       >
-                        <Crown className="w-4 h-4" />
-                        Manage
+                        Start Practice
+                        <ArrowRight className="w-4 h-4" />
                       </div>
-                    </NavLink>
-                  </SignedIn>
-
-                  <NavLink
-                    href="/#features"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    Features
-                  </NavLink>
-                  <NavLink
-                    href="/#pricing"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    Pricing
-                  </NavLink>
-                  <SignedIn>
-                    <NavLink
-                      href="/feedback"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      Feedback
-                    </NavLink>
-                    <NavLink
-                      href="/dashboard"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      Start Practice
                     </NavLink>
                   </SignedIn>
                   <SignedOut>
