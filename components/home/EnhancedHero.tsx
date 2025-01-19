@@ -33,16 +33,16 @@ const EnhancedHero = () => {
             className="space-y-6 lg:space-y-8 text-center lg:text-left"
           >
             <h1 className="text-4xl lg:text-6xl font-bold leading-tight">
-              Transform Your
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-indigo-600 px-2">
-                Voice
+              Master Your Voice,
+              <span className="block bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-indigo-600">
+                Unlock Your Potential
               </span>
-              Into Impact
             </h1>
 
             <p className="text-lg lg:text-xl text-gray-600 max-w-lg mx-auto lg:mx-0">
-              Leverage AI-powered analysis to enhance your communication skills
-              and receive instant, personalized feedback.
+              Get real-time AI feedback on your speaking skills. From pitch and
+              pace to clarity and confidence - transform the way you communicate
+              with personalized insights.
             </p>
 
             <div className="flex justify-center lg:justify-start gap-4">
@@ -54,7 +54,7 @@ const EnhancedHero = () => {
                   href={userId ? "/dashboard" : "/sign-up"}
                   className="flex items-center gap-2"
                 >
-                  Get Started Free
+                  Analyze Your Voice Now
                   <ArrowRight className="w-5 h-5" />
                 </Link>
               </Button>
