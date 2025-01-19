@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { BrainIcon, Mic, FileText, Sparkles, ArrowRight } from "lucide-react";
 import { Button } from "../ui/button";
 import Link from "next/link";
+import { useAuth } from "@clerk/nextjs";
 
 const steps = [
   {
@@ -32,6 +33,7 @@ const steps = [
 ];
 
 const HowItWorks = () => {
+  const { userId } = useAuth();
   return (
     <section className="relative py-24 overflow-hidden bg-white">
       {/* Background Gradient */}
@@ -104,7 +106,10 @@ const HowItWorks = () => {
               size="lg"
               className="rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-indigo-600 hover:to-purple-600 text-white px-8 group"
             >
-              <Link href="/#pricing" className="flex items-center gap-2">
+              <Link
+                href={userId ? "/dashboard" : "/sign-in"}
+                className="flex items-center gap-2"
+              >
                 Start Practicing Now
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>

@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import DynamicPayment from "../payment/DynamicPayment";
 import { Button } from "../ui/button";
+import Link from "next/link";
 
 const features = {
   free: [
@@ -122,10 +123,13 @@ const PricingCard = ({
         onClick={handlePricingAction}
       >
         {tier === "Free" ? (
-          <div className="flex items-center justify-center gap-2">
+          <Link
+            href={userId ? "/practice" : "/sign-in"}
+            className="flex items-center justify-center gap-2"
+          >
             Get Started
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-          </div>
+          </Link>
         ) : isSignedIn ? (
           <DynamicPayment userId={userId!} />
         ) : (
