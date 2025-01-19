@@ -265,6 +265,7 @@ const PracticeSession = ({
                     • Take a moment to gather your thoughts before starting
                   </li>
                   <li>• You can pause between questions if needed</li>
+                  <li>• Try to keep it under 60 seconds</li>
                 </ul>
               </div>
               <button
