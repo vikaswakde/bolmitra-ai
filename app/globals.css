@@ -81,4 +81,10 @@ body {
   /* button {
     @apply hover:cursor-pointer bg-purple-600 hover:bg-purple-700;
   } */
+  html,
+  body {
+    overflow-x: hidden;
+    position: relative;
+    width: 100%;
+  }
 }

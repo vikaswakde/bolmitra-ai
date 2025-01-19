@@ -33,20 +33,22 @@ export default async function RootLayout({
 
   return (
     <ClerkProvider>
-      <html lang="en">
+      <html lang="en" className="overflow-x-hidden">
         <body
           className={cn(
             "min-h-screen bg-background font-sans antialiased overflow-x-hidden",
             fontSans.variable
           )}
         >
-          <div className="absolute inset-0 -z-10">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,#e9d5ff,transparent)]" />
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,#ddd6fe,transparent)]" />
+          <div className="relative overflow-x-hidden w-full">
+            <div className="absolute inset-0 -z-10">
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,#e9d5ff,transparent)]" />
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,#ddd6fe,transparent)]" />
+            </div>
+            <Header isPro={isPro} />
+            <main className="overflow-x-hidden">{children}</main>
+            <Toaster />
           </div>
-          <Header isPro={isPro} />
-          <main>{children}</main>
-          <Toaster />
         </body>
       </html>
     </ClerkProvider>
