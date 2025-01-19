@@ -51,7 +51,7 @@ export default function FeedbackDisplay({ feedback }: FeedbackDisplayProps) {
   const costs = calculateCosts();
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 overflow-x-hidden">
       {/* Header Section with Score */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
