@@ -4,6 +4,7 @@ import { ArrowRight, Users, Star, Award } from "lucide-react";
 import Link from "next/link";
 import { Button } from "../ui/button";
 import Image from "next/image";
+import { useAuth } from "@clerk/nextjs";
 
 const stats = [
   { label: "Active Users", value: "10K+", icon: Users },
@@ -12,6 +13,8 @@ const stats = [
 ];
 
 const EnhancedHero = () => {
+  const { userId } = useAuth();
+
   return (
     <section className="relative min-h-[90vh] flex items-center ">
       {/* Background Elements */}
@@ -47,7 +50,10 @@ const EnhancedHero = () => {
                 size="lg"
                 className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-indigo-600 hover:to-purple-600 text-white rounded-full px-8"
               >
-                <Link href="/#pricing" className="flex items-center gap-2">
+                <Link
+                  href={userId ? "/dashboard" : "/sign-up"}
+                  className="flex items-center gap-2"
+                >
                   Get Started Free
                   <ArrowRight className="w-5 h-5" />
                 </Link>
