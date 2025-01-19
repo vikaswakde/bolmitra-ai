@@ -67,7 +67,7 @@ const features = [
 
 const Features = () => {
   const [showAllFeatures, setShowAllFeatures] = useState(false);
-  const displayedFeatures = showAllFeatures ? features : features.slice(0, 4);
+  const displayedFeatures = showAllFeatures ? features : features.slice(0, 3);
 
   return (
     <section className="py-24 bg-gradient-to-b from-white to-purple-50">
