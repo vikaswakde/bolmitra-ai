@@ -1,10 +1,13 @@
 import getDbConnection from "./db";
 
-export async function getCategories() {
+export async function getCategories(userId?: string) {
   try {
     const sql = await getDbConnection();
     const categories = await sql`
       SELECT * FROM categories 
+      WHERE 
+        is_custom = false 
+        OR (is_custom = true AND user_id = ${userId})
       ORDER BY created_at ASC
     `;
     return { success: true, data: categories };

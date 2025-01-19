@@ -31,6 +31,7 @@ export async function POST(req: Request) {
         SET context = ${context},
             description = ${context}
         WHERE id = ${categoryId}
+        AND (user_id = ${userId} OR user_id IS NULL)
         RETURNING *
       `;
     } else {
@@ -41,12 +42,14 @@ export async function POST(req: Request) {
           name,
           context,
           is_custom,
-          description
+          description,
+          user_id
         ) VALUES (
           ${name},
           ${context},
           ${true},
-          ${context}
+          ${context},
+          ${userId}
         )
         RETURNING *
       `;

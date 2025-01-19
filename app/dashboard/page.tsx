@@ -7,7 +7,7 @@ import { Sparkles } from "lucide-react";
 
 export default async function Dashboard() {
   const user = await currentUser();
-  const { data: categories = [] } = await getCategories();
+  const { data: categories = [] } = await getCategories(user?.id);
   console.log("This are all the categories", categories);
 
   // Get user's subscription status
