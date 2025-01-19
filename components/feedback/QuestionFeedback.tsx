@@ -163,7 +163,7 @@ export function QuestionFeedback({ questionFeedback }: QuestionFeedbackProps) {
   };
 
   return (
-    <div className="space-y-[2rem] md:space-y-[4rem] w-full md:w-fit">
+    <div className="space-y-[2rem] md:space-y-[4rem] w-full md:w-fit overflow-x-hidden">
       {/* Voice Model Selector */}
       <div className="bg-purple-50 p-4 md:p-6 rounded-xl md:rounded-2xl border border-gray-200 shadow-sm mb-4 md:mb-6 w-full md:w-fit static md:absolute md:top-0 md:right-0">
         <div className="flex flex-col justify-center items-start gap-3 md:gap-4">
