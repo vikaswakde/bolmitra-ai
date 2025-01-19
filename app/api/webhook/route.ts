@@ -42,6 +42,15 @@ export async function POST(req: Request) {
         break;
 
       case EventName.SubscriptionCanceled:
+        // Update user status to inactive when subscription is cancelled
+        await sql`
+          UPDATE users u
+          SET status = 'inactive'
+          FROM subscriptions s
+          WHERE s.paddle_subscription_id = ${eventData.data.id}
+          AND u.user_id = s.user_id
+        `;
+
         await sql`
           UPDATE subscriptions 
           SET 
@@ -52,13 +61,19 @@ export async function POST(req: Request) {
         break;
 
       case EventName.TransactionCompleted:
-        // First, check if this is a new subscription transaction
         const pendingTnx = await sql`
           SELECT * FROM pending_transactions 
           WHERE paddle_transaction_id = ${eventData.data.id}
         `;
 
         if (pendingTnx.length > 0) {
+          // Update user status to active
+          await sql`
+            UPDATE users 
+            SET status = 'active'
+            WHERE user_id = ${pendingTnx[0].user_id}
+          `;
+
           // Create subscription record
           await sql`
             INSERT INTO subscriptions (

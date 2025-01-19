@@ -17,13 +17,14 @@ export interface QuestionSegment {
 interface PracticeSessionProps {
   questions: Question[];
   categoryId: string;
-  userPlan: string;
+  isPro: boolean;
+  // isCustomCategory: boolean;
 }
 const PracticeSession = ({
   questions,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   categoryId,
-  userPlan,
+  isPro,
 }: PracticeSessionProps) => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -316,7 +317,7 @@ const PracticeSession = ({
       </div>
 
       {/* Plan Info */}
-      {userPlan === "free" && (
+      {!isPro && (
         <div className="text-center">
           <p className="inline-block bg-purple-50 text-purple-700 px-4 py-2 rounded-full text-sm border border-purple-200">
             Free Plan: {questions.length - currentQuestionIndex} questions

@@ -46,11 +46,12 @@ export const sampleQuestions = {
   "Sales Pitch": [
     {
       questionText:
-        "Pitch our software product to a potential enterprise client.",
+        "You're meeting with a Fortune 500 CTO. Deliver a compelling 2-minute pitch for your enterprise SaaS solution, highlighting ROI and competitive advantages.",
       difficultyLevel: "intermediate",
     },
     {
-      questionText: "Handle a common sales objection about pricing.",
+      questionText:
+        "A potential client says 'Your solution looks great but it's outside our budget.' Address this pricing objection while maintaining value proposition.",
       difficultyLevel: "beginner",
     },
   ],

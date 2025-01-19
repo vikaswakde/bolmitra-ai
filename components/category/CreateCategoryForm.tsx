@@ -44,12 +44,16 @@ interface CreateCategoryFormProps {
   category?: Category;
   mode?: "create" | "regenerate";
   onSuccess?: () => void;
+  isPro: boolean;
+  customCategoryCount: number;
 }
 
 export function CreateCategoryForm({
   category,
   mode = "create",
   onSuccess,
+  isPro,
+  customCategoryCount,
 }: CreateCategoryFormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
@@ -60,13 +64,22 @@ export function CreateCategoryForm({
     defaultValues: {
       name: category?.name ?? "",
       context: category?.context ?? "",
-      questionCount: 2,
+      questionCount: isPro ? 2 : 2,
       difficulty: "intermediate",
     },
   });
 
   async function onSubmit(values: FormData) {
     try {
+      if (!isPro && customCategoryCount >= 1 && mode === "create") {
+        toast({
+          title: "Category limit reached",
+          description: "Upgrade to Pro to create more custom categories",
+          variant: "destructive",
+        });
+        return;
+      }
+
       setIsLoading(true);
 
       let result;
@@ -168,12 +181,18 @@ export function CreateCategoryForm({
                   <Input
                     type="number"
                     min={1}
-                    max={20}
+                    max={isPro ? 20 : 2}
                     {...field}
                     onChange={(e) => field.onChange(parseInt(e.target.value))}
-                    disabled={isLoading}
+                    disabled={isLoading || !isPro}
+                    value={isPro ? field.value : 2}
                   />
                 </FormControl>
+                {!isPro && (
+                  <FormDescription>
+                    Free users are limited to 2 questions
+                  </FormDescription>
+                )}
                 <FormMessage />
               </FormItem>
             )}

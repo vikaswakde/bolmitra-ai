@@ -77,6 +77,7 @@ export function QuestionFeedback({ questionFeedback }: QuestionFeedbackProps) {
       }
       audio.remove();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const generateAndPlayAudio = async (text: string, questionId: string) => {
@@ -94,6 +95,7 @@ export function QuestionFeedback({ questionFeedback }: QuestionFeedbackProps) {
       );
 
       const requestBody =
+        // @ts-expect-error soon adding hugginface tts
         selectedModel.type === "huggingface"
           ? {
               type: "huggingface",
@@ -134,6 +136,7 @@ export function QuestionFeedback({ questionFeedback }: QuestionFeedbackProps) {
 
       // Use the correct MIME type based on the model type
       const mimeType =
+        // @ts-expect-error we will add hugginface soon
         selectedModel.type === "huggingface" ? "audio/mpeg" : "audio/wav";
       const blob = new Blob([audioData], { type: mimeType });
       const newAudioUrl = URL.createObjectURL(blob);

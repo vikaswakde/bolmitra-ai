@@ -1,12 +1,12 @@
 "use client";
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
+import { AnimatePresence, motion } from "framer-motion";
+import { Crown, Menu, MessageSquare, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState, useEffect } from "react";
-import { Button } from "../ui/button";
-import { Menu, X } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
 import { usePathname } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import { Button } from "../ui/button";
 
 const NavLink = ({
   href,
@@ -27,7 +27,7 @@ const NavLink = ({
   );
 };
 
-const Header = () => {
+const Header = ({ isPro }: { isPro: boolean }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
@@ -84,7 +84,6 @@ const Header = () => {
             <div className="hidden md:flex items-center gap-2 mr-8">
               <NavLink href="/#features">Features</NavLink>
               <NavLink href="/#pricing">Pricing</NavLink>
-              <SignedIn></SignedIn>
             </div>
 
             {/* Auth Buttons */}
@@ -95,17 +94,45 @@ const Header = () => {
                   animate={{ opacity: 1 }}
                   className="flex items-center gap-4"
                 >
-                  <motion.div
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
+                  {/* Subscription Status Badge */}
+                  <div
+                    className={`px-3 py-1 rounded-full text-sm font-medium flex items-center gap-2 ${
+                      isPro
+                        ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white"
+                        : "bg-gray-100 text-gray-600"
+                    }`}
                   >
-                    <Button
-                      variant="outline"
-                      className="rounded-full border-purple-200 hover:border-purple-300 hover:bg-purple-50 transition-all duration-200"
+                    <Crown className="w-4 h-4" />
+                    {isPro ? "Pro" : "Free"}
+                  </div>
+
+                  {/* Manage Subscription Button */}
+                  <NavLink href="/settings/billing">
+                    <div
+                      className={`px-3 py-2 rounded-full text-sm font-medium flex items-center justify-center gap-2 ${
+                        isPro
+                          ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white"
+                          : "bg-gray-100 text-gray-600"
+                      }`}
                     >
-                      <NavLink href="/feedback">Feedback</NavLink>
-                    </Button>
-                  </motion.div>
+                      <Crown className="w-4 h-4" />
+                      Manage
+                    </div>
+                  </NavLink>
+
+                  {/* Existing Buttons */}
+                  <NavLink href="/feedback">
+                    <div
+                      className={`px-3 py-2 rounded-full text-sm font-medium flex items-center justify-center gap-2 ${
+                        isPro
+                          ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white"
+                          : "bg-gray-100 text-gray-600"
+                      }`}
+                    >
+                      <MessageSquare className="w-4 h-4" />
+                      Feedback
+                    </div>
+                  </NavLink>
 
                   <motion.div
                     whileHover={{ scale: 1.02 }}
@@ -119,6 +146,7 @@ const Header = () => {
                     </Button>
                   </motion.div>
 
+                  {/* User Button */}
                   <motion.div
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
@@ -136,7 +164,6 @@ const Header = () => {
                   </motion.div>
                 </motion.div>
               </SignedIn>
-
               <SignedOut>
                 <motion.div
                   initial={{ opacity: 0 }}
@@ -203,6 +230,36 @@ const Header = () => {
             <div className="bg-white/80 backdrop-blur-lg border-b border-gray-200 shadow-lg">
               <div className="container mx-auto px-4 py-4">
                 <div className="flex flex-col gap-4">
+                  {/* Add Subscription Status for Mobile */}
+                  <SignedIn>
+                    <div
+                      className={`px-3 py-2 rounded-full text-sm font-medium flex items-center justify-center gap-2 ${
+                        isPro
+                          ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white"
+                          : "bg-gray-100 text-gray-600"
+                      }`}
+                    >
+                      <Crown className="w-4 h-4" />
+                      {isPro ? "Pro Plan" : "Free Plan"}
+                    </div>
+
+                    <NavLink
+                      href="/settings/billing"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      <div
+                        className={`px-3 py-2 rounded-full text-sm font-medium flex items-center justify-center gap-2 ${
+                          isPro
+                            ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white"
+                            : "bg-gray-100 text-gray-600"
+                        }`}
+                      >
+                        <Crown className="w-4 h-4" />
+                        Manage
+                      </div>
+                    </NavLink>
+                  </SignedIn>
+
                   <NavLink
                     href="/#features"
                     onClick={() => setIsMobileMenuOpen(false)}

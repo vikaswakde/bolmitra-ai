@@ -5,6 +5,8 @@ import { cn } from "@/lib/utils";
 import Header from "@/components/home/Header";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Toaster } from "@/components/ui/toaster";
+import { getUserSubscriptionStatus } from "@/lib/subscription";
+import { currentUser } from "@clerk/nextjs/server";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -21,11 +23,14 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
+  const user = await currentUser();
+  const { isPro } = await getUserSubscriptionStatus(user?.id || "");
+
   return (
     <ClerkProvider>
       <html lang="en">
@@ -35,7 +40,11 @@ export default function RootLayout({
             fontSans.variable
           )}
         >
-          <Header></Header>
+          <div className="absolute inset-0 -z-10">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,#e9d5ff,transparent)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,#ddd6fe,transparent)]" />
+          </div>
+          <Header isPro={isPro} />
           <main>{children}</main>
           <Toaster />
         </body>

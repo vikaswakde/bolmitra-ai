@@ -4,8 +4,9 @@ export interface Category {
   name: string;
   description: string;
   context?: string;
-  is_custom?:boolean;
-  created_at: string;
+  is_custom: boolean;
+  user_id?: string;
+  created_at: Date;
 }
 
 export interface Question {

@@ -15,7 +15,7 @@ import { RegenerateQuestions } from "./RegenerateQuestions";
 
 interface CategoryGridProps {
   categories: Category[];
-  userPlan: string;
+  isPro: boolean;
 }
 
 const categoryIcons = {
@@ -24,16 +24,11 @@ const categoryIcons = {
   "Sales Pitch": <BookOpenIcon className="w-6 h-6" />,
 };
 
-export default function CategoryGrid({
-  categories,
-  userPlan,
-}: CategoryGridProps) {
-  const isPro = userPlan !== "pro";
-
+export default function CategoryGrid({ categories, isPro }: CategoryGridProps) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-10">
       {categories.map((category, index) => {
-        const isLocked = !isPro && index > 0;
+        const isLocked = !isPro && index > 3;
         return (
           <div
             key={category.id}
@@ -69,15 +64,24 @@ export default function CategoryGrid({
               {/* Only show regenerate option for custom categories */}
               {category.is_custom && (
                 <div className="flex items-center">
-                  <RegenerateQuestions category={category} />
-                  <DeleteCategory category={category} />
+                  <RegenerateQuestions
+                    category={category}
+                    isPro={isPro}
+                    customCategoryCount={
+                      categories.filter((c) => c.is_custom).length
+                    }
+                  />
+                  <DeleteCategory category={category} isPro={isPro} />
                 </div>
               )}
             </div>
           </div>
         );
       })}
-      <CreateCategoryButton userPlan={userPlan} />
+      <CreateCategoryButton
+        isPro={isPro}
+        customCategoryCount={categories.filter((c) => c.is_custom).length}
+      />
     </div>
   );
 }

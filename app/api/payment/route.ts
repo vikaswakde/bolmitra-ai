@@ -3,21 +3,41 @@ import { Environment, Paddle } from "@paddle/paddle-node-sdk";
 import { NextResponse } from "next/server";
 
 const paddle = new Paddle(process.env.PADDLE_API_KEY!, {
-  environment: Environment.sandbox,
+  environment: Environment.production,
 });
 
 export async function POST(req: Request) {
   try {
-    const { userId } = await req.json();
-    console.log("Creating transaction for userId:", userId);
+    const { userId, email, fullName } = await req.json();
+    console.log("Creating transaction for user:", { userId, email, fullName });
 
-    if (!userId) {
-      throw new Error("User ID is required");
+    if (!userId || !email) {
+      throw new Error("User ID and email are required");
     }
 
     const sql = await getDbConnection();
 
-    // Check if user already has a pending transaction
+    // Create or update user record with pending status initially
+    await sql`
+      INSERT INTO users (
+        user_id,
+        email,
+        full_name,
+        status
+      ) VALUES (
+        ${userId},
+        ${email},
+        ${fullName},
+        'pending'
+      )
+      ON CONFLICT (user_id) 
+      DO UPDATE SET
+        email = EXCLUDED.email,
+        full_name = EXCLUDED.full_name,
+        status = 'pending'
+    `;
+
+    // Check for existing pending transaction
     const existingTnx = await sql`
       SELECT * FROM pending_transactions 
       WHERE user_id = ${userId} AND status = 'pending'
@@ -28,7 +48,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ tnx: existingTnx[0].paddle_transaction_id });
     }
 
-    // Create transaction
+    // Create Paddle transaction
     console.log("Creating new Paddle transaction...");
     const tnx = await paddle.transactions.create({
       items: [
@@ -57,7 +77,7 @@ export async function POST(req: Request) {
 
     console.log("Paddle transaction created:", tnx.id);
 
-    // Create a temporary transaction record
+    // Create pending transaction record
     await sql`
       INSERT INTO pending_transactions (
         user_id,

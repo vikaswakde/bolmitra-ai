@@ -1,14 +1,10 @@
 "use client";
 
-import {
-  CheckoutEventNames,
-  Paddle,
-  initializePaddle,
-} from "@paddle/paddle-js";
-import React, { useEffect, useState } from "react";
-import { useAuth } from "@clerk/nextjs";
-import { useRouter } from "next/navigation";
+import { useUser } from "@clerk/nextjs";
+import { Paddle, initializePaddle } from "@paddle/paddle-js";
 import { ArrowRight } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 interface DynamicPaymentProps {
   userId: string;
@@ -17,7 +13,7 @@ interface DynamicPaymentProps {
 const DynamicPayment = ({ userId }: DynamicPaymentProps) => {
   const [paddle, setPaddle] = useState<Paddle>();
   const [isLoading, setIsLoading] = useState(false);
-  const { isSignedIn } = useAuth();
+  const { isSignedIn, user } = useUser();
   const router = useRouter();
 
   useEffect(() => {
@@ -29,25 +25,8 @@ const DynamicPayment = ({ userId }: DynamicPaymentProps) => {
     }
 
     initializePaddle({
-      environment: "sandbox",
+      environment: "production",
       token: process.env.NEXT_PUBLIC_PADDLE_CLIENT_TOKEN!,
-      eventCallback: async (event) => {
-        console.log("Paddle event received:", event.name, event.data);
-        if (event.name === CheckoutEventNames.CHECKOUT_COMPLETED) {
-          await fetch("/api/subscription/activate", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              userId,
-              transactionId: event.data?.transaction_id,
-            }),
-          });
-
-          router.push("/success");
-        }
-      },
     })
       .then((paddle) => {
         console.log("Paddle initialized successfully");
@@ -67,30 +46,36 @@ const DynamicPayment = ({ userId }: DynamicPaymentProps) => {
         throw new Error("Payment system not initialized");
       }
 
-      if (!isSignedIn) {
+      if (!isSignedIn || !user) {
         router.push("/sign-in");
         return;
       }
 
+      // Create user and initiate payment in one request
       const response = await fetch("/api/payment", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId }),
+        body: JSON.stringify({
+          userId: user.id,
+          email: user.primaryEmailAddress?.emailAddress,
+          fullName: user.fullName,
+        }),
       });
 
       console.log("Payment API response status:", response.status);
       const data = await response.json();
       console.log("Payment API response data:", data);
 
-      if (!response.ok)
+      if (!response.ok) {
         throw new Error(data.error || "Payment creation failed");
+      }
 
       await paddle.Checkout.open({
         transactionId: data.tnx,
         settings: {
           displayMode: "overlay",
           theme: "dark",
-          successUrl: `https://5e78-2409-4042-2d98-a90d-c864-6958-f3b2-af69.ngrok-free.app/success`,
+          successUrl: `https://bolmitra.live/`,
         },
       });
     } catch (error) {

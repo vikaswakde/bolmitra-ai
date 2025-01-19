@@ -17,9 +17,10 @@ import { useRouter } from "next/navigation";
 
 interface DeleteCategoryProps {
   category: Category;
+  isPro: boolean;
 }
 
-export function DeleteCategory({ category }: DeleteCategoryProps) {
+export function DeleteCategory({ category, isPro }: DeleteCategoryProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
@@ -49,6 +50,7 @@ export function DeleteCategory({ category }: DeleteCategoryProps) {
           variant="outline"
           size="sm"
           className="absolute top-2 right-2 w-fit items-center rounded-[28px] rounded-tr-[12px]   bg-transparent shadow-inner border border-gray-400/50 border-dashed"
+          disabled={!isPro}
         >
           <Trash2 className="h-4 w-4 text-red-500 " />
         </Button>
@@ -73,7 +75,7 @@ export function DeleteCategory({ category }: DeleteCategoryProps) {
           <Button
             variant="destructive"
             onClick={handleDelete}
-            disabled={isLoading}
+            disabled={isLoading || !isPro}
           >
             {isLoading ? (
               <>

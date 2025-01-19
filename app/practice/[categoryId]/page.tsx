@@ -1,11 +1,11 @@
 import PracticeSession from "@/components/practice/PracticeSession";
-import { getCategoryQuestions } from "@/lib/category-helpers";
-import { getUserSubscriptionPlan } from "@/lib/payment-helpers";
-import { Question } from "@/lib/types";
 import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { Sparkles, ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import { getUserSubscriptionStatus } from "@/lib/subscription";
+import { getCategoryQuestions } from "@/lib/category-helpers";
+import { Question } from "@/lib/types";
 
 const PracticePage = async (props: {
   params: Promise<{ categoryId: string }>;
@@ -16,12 +16,8 @@ const PracticePage = async (props: {
   const user = await currentUser();
   if (!user) redirect("/sign-in");
 
-  const userPlan = await getUserSubscriptionPlan(
-    user?.emailAddresses[0]?.emailAddress
-  );
+  const { isPro } = await getUserSubscriptionStatus(user?.id || "");
   const { data: questions = [] } = await getCategoryQuestions(categoryId);
-  const limitedQuestions =
-    userPlan === "free" ? questions.slice(0, 3) : questions;
 
   return (
     <div className="max-h-fit bg-gradient-to-b from-purple-50 to-white space-y-4">
@@ -57,9 +53,9 @@ const PracticePage = async (props: {
         </div>
 
         <PracticeSession
-          questions={limitedQuestions as Question[]}
+          questions={questions as Question[]}
           categoryId={categoryId}
-          userPlan={userPlan || "free"}
+          isPro={isPro}
         />
       </div>
     </div>

@@ -14,11 +14,17 @@ import { CreateCategoryForm } from "./CreateCategoryForm";
 import { useState } from "react";
 
 interface CreateCategoryButtonProps {
-  userPlan: string;
+  isPro: boolean;
+  customCategoryCount: number;
 }
 
-export function CreateCategoryButton({ userPlan }: CreateCategoryButtonProps) {
+export function CreateCategoryButton({
+  isPro,
+  customCategoryCount,
+}: CreateCategoryButtonProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const isDisabled = !isPro && customCategoryCount >= 1;
+
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger
@@ -28,14 +34,18 @@ export function CreateCategoryButton({ userPlan }: CreateCategoryButtonProps) {
         <Button
           variant="outline"
           className="h-[200px] w-full"
-          disabled={userPlan == "pro"}
+          disabled={isDisabled}
         >
           <div className="flex flex-col items-center gap-4">
             <Plus className="h-8 w-8" />
             <div className="text-xl font-semibold">Create Custom Category</div>
-            <div className="text-sm text-muted-foreground">
-              Create your own practice category
-            </div>
+            {!isPro && (
+              <div className="text-sm text-muted-foreground">
+                {customCategoryCount >= 1
+                  ? "Upgrade to Pro to create more categories"
+                  : "Free users can create 1 custom category"}
+              </div>
+            )}
           </div>
         </Button>
       </DialogTrigger>
@@ -43,10 +53,16 @@ export function CreateCategoryButton({ userPlan }: CreateCategoryButtonProps) {
         <DialogHeader>
           <DialogTitle>Create Custom Category</DialogTitle>
           <DialogDescription>
-            Create a personalized category with AI-generated practice questions.
+            {isPro
+              ? "Create a personalized category with AI-generated practice questions."
+              : "Free users can create one custom category with up to 2 questions."}
           </DialogDescription>
         </DialogHeader>
-        <CreateCategoryForm onSuccess={() => setIsOpen(false)} />
+        <CreateCategoryForm
+          onSuccess={() => setIsOpen(false)}
+          isPro={isPro}
+          customCategoryCount={customCategoryCount}
+        />
       </DialogContent>
     </Dialog>
   );

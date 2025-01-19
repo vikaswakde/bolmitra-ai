@@ -16,10 +16,19 @@ import { CreateCategoryForm } from "./CreateCategoryForm";
 
 interface RegenerateQuestionsProps {
   category: Category;
+  isPro: boolean;
+  customCategoryCount?: number;
 }
 
-export function RegenerateQuestions({ category }: RegenerateQuestionsProps) {
+export function RegenerateQuestions({
+  category,
+  isPro,
+  customCategoryCount = 0,
+}: RegenerateQuestionsProps) {
   const [isOpen, setIsOpen] = useState(false);
+
+  // Only Pro users can regenerate questions
+  if (!isPro) return null;
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -36,14 +45,15 @@ export function RegenerateQuestions({ category }: RegenerateQuestionsProps) {
         <DialogHeader>
           <DialogTitle>Regenerate Questions</DialogTitle>
           <DialogDescription>
-            This will replace all existing questions for this category. This
-            action cannot be undone.
+            This will replace all existing questions for this category.
           </DialogDescription>
         </DialogHeader>
         <CreateCategoryForm
           category={category}
           mode="regenerate"
           onSuccess={() => setIsOpen(false)}
+          isPro={isPro}
+          customCategoryCount={customCategoryCount}
         />
       </DialogContent>
     </Dialog>

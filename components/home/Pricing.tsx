@@ -1,17 +1,16 @@
 "use client";
-import { motion } from "framer-motion";
-import { Check, ArrowRight, Sparkles, Zap, Shield, Clock } from "lucide-react";
-import { Button } from "../ui/button";
-import Link from "next/link";
-import { useState } from "react";
 import { useAuth } from "@clerk/nextjs";
+import { motion } from "framer-motion";
+import { ArrowRight, Check, Clock, Shield, Sparkles, Zap } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import DynamicPayment from "../payment/DynamicPayment";
+import { Button } from "../ui/button";
 
 const features = {
   free: [
     "1 category access",
-    "3 questions per day",
+    "2 questions per day",
     "Basic feedback analysis",
     "Simple progress tracking",
   ],
@@ -141,7 +140,7 @@ const PricingCard = ({
 };
 
 const Pricing = () => {
-  const { isSignedIn } = useAuth();
+  // const { isSignedIn } = useAuth();
   const [isUSD, setIsUSD] = useState(true);
 
   return (
