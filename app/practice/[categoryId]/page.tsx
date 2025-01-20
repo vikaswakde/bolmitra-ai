@@ -20,7 +20,7 @@ const PracticePage = async (props: {
   const { data: questions = [] } = await getCategoryQuestions(categoryId);
 
   return (
-    <div className="max-h-fit pace-y-4">
+    <div className="min-h-screen space-y-4">
       {/* Background Elements */}
       <div className="absolute inset-0 -z-10">
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-purple-100 rounded-full blur-3xl opacity-20 -translate-y-1/2 translate-x-1/2" />
