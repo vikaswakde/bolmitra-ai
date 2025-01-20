@@ -7,6 +7,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { Toaster } from "@/components/ui/toaster";
 import { getUserSubscriptionStatus } from "@/lib/subscription";
 import { currentUser } from "@clerk/nextjs/server";
+import { Analytics } from "@vercel/analytics/next";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -46,7 +47,9 @@ export default async function RootLayout({
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,#ddd6fe,transparent)]" />
             </div>
             <Header isPro={isPro} />
-            <main className="overflow-x-hidden">{children}</main>
+            <main className="overflow-x-hidden">
+              {children} <Analytics />
+            </main>
             <Toaster />
           </div>
         </body>
