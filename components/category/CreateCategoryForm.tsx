@@ -28,6 +28,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../ui/tooltip";
 
 const formSchema = z.object({
   name: z.string().min(3, "Category name must be at least 3 characters"),
@@ -178,21 +184,31 @@ export function CreateCategoryForm({
               <FormItem>
                 <FormLabel>Number of Questions</FormLabel>
                 <FormControl>
-                  <Input
-                    type="number"
-                    min={1}
-                    max={isPro ? 20 : 2}
-                    {...field}
-                    onChange={(e) => field.onChange(parseInt(e.target.value))}
-                    disabled={isLoading || !isPro}
-                    value={isPro ? field.value : 2}
-                  />
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div>
+                          <Input
+                            type="number"
+                            min={1}
+                            max={isPro ? 20 : 2}
+                            {...field}
+                            onChange={(e) =>
+                              field.onChange(parseInt(e.target.value))
+                            }
+                            disabled={isLoading || !isPro}
+                            value={isPro ? field.value : 2}
+                          />
+                        </div>
+                      </TooltipTrigger>
+                      {!isPro && (
+                        <TooltipContent>
+                          <p>Upgrade to unlock more questions</p>
+                        </TooltipContent>
+                      )}
+                    </Tooltip>
+                  </TooltipProvider>
                 </FormControl>
-                {!isPro && (
-                  <FormDescription>
-                    Free users are limited to 2 questions
-                  </FormDescription>
-                )}
                 <FormMessage />
               </FormItem>
             )}
