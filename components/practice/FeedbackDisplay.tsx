@@ -51,7 +51,7 @@ export default function FeedbackDisplay({ feedback }: FeedbackDisplayProps) {
   const costs = calculateCosts();
 
   return (
-    <div className="space-y-8 overflow-x-hidden">
+    <div className="space-y-8 overflow-x-hidden h-full">
       {/* Header Section with Score */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -426,7 +426,7 @@ export default function FeedbackDisplay({ feedback }: FeedbackDisplayProps) {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="flex flex-col items-start md:items-center space-y-8 border-t pt-8 relative rounded-tr-2xl border rounded-2xl w-fit"
+        className="flex flex-col items-start md:items-center space-y-8 border-t pt-8 relative rounded-tr-xl border-dashed  w-fit border-purple-400"
       >
         <h3 className="text-purple-500 shadow-sm text-xl px-10">
           Question{" "}

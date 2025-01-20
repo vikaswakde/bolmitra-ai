@@ -48,12 +48,8 @@ const FeedbackPage = async (props: {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-white">
+    <div className="min-h-screen overflow-hidden">
       {/* Background Elements */}
-      <div className="absolute inset-0 -z-10">
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-purple-100 rounded-full blur-3xl opacity-20 -translate-y-1/2 translate-x-1/2" />
-        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-indigo-100 rounded-full blur-3xl opacity-20 translate-y-1/2 -translate-x-1/2" />
-      </div>
 
       <div className="container max-w-6xl py-12 mx-auto px-4">
         {/* Navigation */}
