@@ -8,6 +8,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { getUserSubscriptionStatus } from "@/lib/subscription";
 import { currentUser } from "@clerk/nextjs/server";
 import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -48,7 +49,7 @@ export default async function RootLayout({
             </div>
             <Header isPro={isPro} />
             <main className="overflow-x-hidden">
-              {children} <Analytics />
+              {children} <Analytics /> <SpeedInsights />
             </main>
             <Toaster />
           </div>
