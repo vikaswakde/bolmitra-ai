@@ -28,7 +28,7 @@ const FeedbackList: React.FC<FeedbackListProps> = ({
   feedbacks,
 }) => {
   return (
-    <div className="relative">
+    <div className="relative min-h-screen">
       <div className="absolute inset-0 -z-10">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,#e9d5ff,transparent)]" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,#ddd6fe,transparent)]" />
