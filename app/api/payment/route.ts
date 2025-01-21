@@ -68,7 +68,7 @@ export async function POST(req: Request) {
             product: {
               name: "Bolmitra AI Pro",
               description: "Get all the PRO Features.",
-              taxCategory: "standard",
+              taxCategory: "saas",
             },
           },
         },
