@@ -89,7 +89,7 @@ export default function TermsPage() {
               </ul>
 
               <h3 className="text-xl text-white mt-6">
-                6. Service Limitations
+                6. Service Limitations and Voice Processing
               </h3>
               <p className="text-gray-300">
                 - We aim for 99.9% uptime but don&apos;t guarantee uninterrupted
@@ -98,11 +98,40 @@ export default function TermsPage() {
                 - AI responses are automated and may not be 100% accurate
                 <br />
                 - Document processing times vary by size and complexity
-                <br />- Maximum file size and monthly usage limits apply
+                <br />
+                - Maximum file size and monthly usage limits apply
+                <br />
+                - Voice processing is handled through Google Gemini AI services
+                <br />
+                - Voice recordings are automatically deleted within 48 hours
+                <br />- Voice recognition accuracy may vary based on factors
+                like accent, background noise, and audio quality
               </p>
 
               <h3 className="text-xl text-white mt-6">
-                7. Contact Information
+                7. Voice Feature Terms
+              </h3>
+              <p className="text-gray-300">
+                By using our voice features, you acknowledge and agree that:
+              </p>
+              <ul className="text-gray-300 list-disc pl-6">
+                <li>
+                  Your voice recordings will be processed by Google Gemini AI
+                  services
+                </li>
+                <li>
+                  Recordings are temporarily stored and automatically deleted
+                  within 48 hours
+                </li>
+                <li>We cannot guarantee 100% accuracy in voice recognition</li>
+                <li>
+                  You will not submit voice recordings containing sensitive or
+                  confidential information
+                </li>
+              </ul>
+
+              <h3 className="text-xl text-white mt-6">
+                8. Contact Information
               </h3>
               <p className="text-gray-300">
                 For support, refunds, or privacy concerns, contact us at:
