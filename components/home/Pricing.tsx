@@ -124,7 +124,7 @@ const PricingCard = ({
       >
         {tier === "Free" ? (
           <Link
-            href={userId ? "/practice" : "/sign-in"}
+            href={userId ? "/dashboard" : "/sign-in"}
             className="flex items-center justify-center gap-2"
           >
             Get Started
