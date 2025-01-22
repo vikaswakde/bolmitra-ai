@@ -38,7 +38,7 @@ export default function PrivacyPage() {
               </li>
               <li>Processed through Google Gemini AI services</li>
               <li>
-                Automatically deleted from Google's servers within 48 hours
+                Automatically deleted from Google&apos;s servers within 48 hours
               </li>
               <li>
                 Stored securely and handled in accordance with data protection
